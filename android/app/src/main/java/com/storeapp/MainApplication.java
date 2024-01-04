@@ -1,4 +1,4 @@
-package com.storeapp;
+package com.mostafa.storeapp;
 
 import androidx.multidex.MultiDexApplication;
 import com.facebook.react.PackageList;

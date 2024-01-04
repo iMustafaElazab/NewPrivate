@@ -95,10 +95,10 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.storeapp"
+    namespace "com.mostafa.storeapp"
 
     defaultConfig {
-        applicationId "com.storeapp"
+        applicationId "com.mostafa.storeapp"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

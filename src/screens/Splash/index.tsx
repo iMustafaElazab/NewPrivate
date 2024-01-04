@@ -191,7 +191,8 @@ export default React.memo((props: RootStackScreenProps<'Splash'>) => {
 
     const openNextScreen = () => {
       console.info(getLogMessage('openNextScreen'));
-      navigation.replace(stateUser ? 'Home' : 'Login');
+      navigation.replace('Home');
+      //navigation.replace(stateUser ? 'Home' : 'Login');
     };
 
     // Check if register visibility, language and user loaded then:
@@ -229,7 +230,7 @@ export default React.memo((props: RootStackScreenProps<'Splash'>) => {
         </Animated.View>
       )}
       {/* TODO: Remove this as it is used only for demonstration */}
-      {!bootSplashIsVisible && <Splash />}
+      {/*  {!bootSplashIsVisible && <Splash />} */}
     </Screen>
   );
   // #endregion

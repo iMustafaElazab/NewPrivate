@@ -6,12 +6,15 @@ import userReducer from './user';
 import dialogsReducer from './dialogs';
 import networkStateReducer from './networkState';
 import {api} from './api/baseApi';
+import homeReducer from './product';
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
+    home: homeReducer,
     dialogs: dialogsReducer,
     networkState: networkStateReducer,
+
     [api.reducerPath]: api.reducer,
   },
   middleware: getDefaultMiddleware => {
@@ -32,5 +35,5 @@ export type RootState = ReturnType<typeof store.getState>;
 export * from './user';
 export * from './dialogs';
 export * from './networkState';
-
+export * from './product';
 export * from './api';

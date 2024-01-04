@@ -415,7 +415,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.storeapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mostafa.storeapp;
 				PRODUCT_NAME = StoreApp;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -447,7 +447,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.storeapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mostafa.storeapp;
 				PRODUCT_NAME = StoreApp;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

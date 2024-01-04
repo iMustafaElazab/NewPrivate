@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "653365869717",
+    "project_id": "storeapp-bb57d",
+    "storage_bucket": "storeapp-bb57d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:653365869717:android:cfd672c1a4320746c02f9c",
+        "android_client_info": {
+          "package_name": "com.mostafa.storeapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAkSWVOehqrLetqTBGzr5j9pTnPDO7ohgE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
