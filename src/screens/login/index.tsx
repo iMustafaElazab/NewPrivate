@@ -1,21 +1,9 @@
 import React from 'react';
 import {View} from 'react-native';
 import {Text} from 'react-native-paper';
-import {useDispatch, useSelector} from 'react-redux';
-import {getHomeApi} from 'store/api/homeApi';
-import {RootState, getHomeResult} from 'store/index';
-import {isErrorWithStatus} from 'utils/ErrorHandlingUtils';
+import {getUserApi} from 'store/api';
 
 export default React.memo(() => {
-  // #region Logger
-  const getLogMessage = (message: string) => {
-    return `## Home Screen: ${message}`;
-  };
-
-  const dispatch = useDispatch();
-  const {products, banners, ads, error} = useSelector(
-    (state: RootState) => state.home,
-  );
 
   const {
     data,
@@ -23,7 +11,7 @@ export default React.memo(() => {
     isFetching: isHomeFetching,
     error: homeError,
     refetch: refetchHome,
-  } = getHomeApi({});
+  } = getUserApi({});
 
   React.useEffect(() => {
     // Check if error is session expired then show it in dialog for logout purpose.
@@ -36,12 +24,13 @@ export default React.memo(() => {
       dispatch(getHomeResult(data));
       getLogMessage(JSON.stringify(data));
     }
-  }, [isHomeLoading, isHomeFetching, homeError, data, dispatch]);
+  }, [isHomeLoading, isHomeFetching, homeError, data]);
 
   return (
     <View>
-      <Text>jsdljlsjlf</Text>
-      <Text>{error}</Text>
+      <Text>jnflshdf</Text>
+      <Text>jnflshdf</Text>
+      <Text>jnflshdf</Text>
     </View>
   );
 });

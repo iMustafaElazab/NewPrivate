@@ -191,7 +191,7 @@ export default React.memo((props: RootStackScreenProps<'Splash'>) => {
 
     const openNextScreen = () => {
       console.info(getLogMessage('openNextScreen'));
-      navigation.replace('Home');
+      navigation.replace('Login');
       //navigation.replace(stateUser ? 'Home' : 'Login');
     };
 

@@ -6,11 +6,13 @@ interface HomeState {
   products?: Product[];
   banners?: Banner[];
   ads?: string;
+  homeError?: string;
 }
 const initialState = {
   products: undefined,
   banners: undefined,
   ads: undefined,
+  errorHome: undefined,
 } as HomeState;
 
 export const homeSlice = createSlice({
@@ -21,6 +23,7 @@ export const homeSlice = createSlice({
       state.products = action.payload.data?.products;
       state.banners = action.payload.data?.banners;
       state.ads = action.payload.data?.ad;
+      state.homeError = action.payload.message;
     },
   },
 });
