@@ -1,5 +1,6 @@
 import {PayloadAction, createSlice} from '@reduxjs/toolkit';
 import {Banner, HomeResponse, Product} from 'types/api';
+import BaseResponse from 'types/api/BaseResponse';
 
 interface HomeState {
   products?: Product[];
@@ -16,10 +17,10 @@ export const homeSlice = createSlice({
   name: 'home',
   initialState,
   reducers: {
-    getHomeResult(state, action: PayloadAction<HomeResponse>) {
-      state.products = action.payload.products;
-      state.banners = action.payload.banners;
-      state.ads = action.payload.ad;
+    getHomeResult(state, action: PayloadAction<BaseResponse<HomeResponse>>) {
+      state.products = action.payload.data?.products;
+      state.banners = action.payload.data?.banners;
+      state.ads = action.payload.data?.ad;
     },
   },
 });

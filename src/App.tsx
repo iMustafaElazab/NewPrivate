@@ -64,14 +64,14 @@ const AppContent = React.memo(() => {
   React.useEffect(() => {
     const appName = getApplicationName();
 
-    // configureLog({
-    //   appName: appName,
-    //   firebaseLogLevels:
-    //     Config.ENABLE_FIREBASE_LOG === 'true'
-    //       ? ['LOG', 'WARN', 'ERROR']
-    //       : undefined,
-    //   isLocalLogEnable: Config.ENABLE_LOCAL_LOG === 'true',
-    // });
+    configureLog({
+      appName: appName,
+      firebaseLogLevels:
+        Config.ENABLE_FIREBASE_LOG === 'true'
+          ? ['LOG', 'WARN', 'ERROR']
+          : undefined,
+      isLocalLogEnable: Config.ENABLE_LOCAL_LOG === 'true',
+    });
   }, []);
 
   // Localization initialization.

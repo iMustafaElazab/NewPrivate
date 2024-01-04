@@ -36,12 +36,11 @@ export default React.memo(() => {
       dispatch(getHomeResult(data));
       getLogMessage(JSON.stringify(data));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHomeLoading, isHomeFetching, homeError]);
+  }, [isHomeLoading, isHomeFetching, homeError, data, dispatch]);
 
   return (
     <View>
-      <Text>{JSON.stringify(data)}</Text>
+      <Text>{JSON.stringify(products)}</Text>
       <Text>jsdljlsjlf</Text>
     </View>
   );

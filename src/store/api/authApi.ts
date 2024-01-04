@@ -15,10 +15,16 @@ export const authApi = api.injectEndpoints({
     logout: builder.mutation<any, void>({
       query: () => '/logout',
     }),
+    profile: builder.query<any, void>({
+      query: () => '/profile',
+    }),
     // TODO: Add more auth related APIs here (register, ...etc).
   }),
   overrideExisting: false,
 });
 
-export const {useLoginMutation: loginApi, useLogoutMutation: logoutApi} =
-  authApi;
+export const {
+  useLoginMutation: loginApi,
+  useLogoutMutation: logoutApi,
+  useProfileQuery: profileApi,
+} = authApi;
