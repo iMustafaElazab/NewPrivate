@@ -45,6 +45,7 @@ enum AppColors {
 
   // App colors.
   // TODO: Add app colors here.
+
 }
 
 export default AppColors;

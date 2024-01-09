@@ -10,7 +10,7 @@ const getLogMessage = (message: string) => {
 
 const MMKV = new MMKVLoader().withEncryption().initialize();
 
-const setString = async (key: LocalStorageKeys, value: string) => {
+export const setString = async (key: LocalStorageKeys, value: string) => {
   console.info(getLogMessage('setString'), key, value);
 
   try {
@@ -23,7 +23,7 @@ const setString = async (key: LocalStorageKeys, value: string) => {
   }
 };
 
-const getString = async (key: LocalStorageKeys) => {
+export const getString = async (key: LocalStorageKeys) => {
   console.info(getLogMessage('getString'), key);
 
   try {

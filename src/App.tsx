@@ -6,7 +6,7 @@ import {
   PermissionsAndroid,
   View,
 } from 'react-native';
-import {Provider as PaperProvider} from 'react-native-paper';
+import {Provider as PaperProvider, Text} from 'react-native-paper';
 import {ScaledSheet} from 'react-native-size-matters';
 import {configureLog} from 'roqay-react-native-common-components';
 import Config from 'react-native-config';

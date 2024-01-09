@@ -4,6 +4,9 @@ type RootStackParamList = {
   Splash: undefined;
   Login: undefined;
   Home: undefined;
+  Register: undefined;
+  Chat: undefined;
+  Settings: undefined;
 };
 
 type RootStackScreenProps<T extends keyof RootStackParamList> =

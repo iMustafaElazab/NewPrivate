@@ -185,6 +185,35 @@ export default React.memo(() => {
     </>
   );
 
+  const getPasswordConfirmationInput2 = () => (
+    <Controller
+      name="password"
+      control={control}
+      rules={{
+        required: {
+          value: true,
+          message: 'Field is Requird',
+        },
+        pattern: {
+          value: strictPasswordRegExp,
+          message: 'Invalid Password',
+        },
+        validate: value => value === getValues('password') || 'not match',
+      }}
+      render={({field: {onChange, onBlur, value}}) => (
+        <TextInput
+          style={styles.input}
+          placeholder={'password'}
+          keyboardType="default"
+          errorProps={{errorMessage: formErrors.pas?.message}}
+          onBlur={onBlur}
+          onChangeText={onChange}
+          value={value}
+        />
+      )}
+    />
+  );
+
   const getEmailInput = () => (
     <Controller
       name="email"
