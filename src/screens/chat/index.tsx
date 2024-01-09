@@ -5,7 +5,7 @@ import {
   Text,
   TextInput,
 } from 'roqay-react-native-common-components';
-import {RootStackParamList} from 'types/navigation';
+import {RootStackParamList, RootStackScreenProps} from 'types/navigation';
 import {Appbar} from 'react-native-paper';
 import {ScaledSheet, ms, s, vs} from 'react-native-size-matters';
 import {Controller, useForm} from 'react-hook-form';
@@ -13,11 +13,13 @@ import AppColors from 'enums/AppColors';
 import ChatCompletionResponseDTO, {
   Message,
 } from 'types/api/ChatCompletionResponseDTO';
+import {chatCompletionsApi} from '../../store/api/chatApi';
 
-export default React.memo((props: RootStackParamList<'Chat'>) => {
+export default React.memo((props: RootStackScreenProps<'Chat'>) => {
   const getLogMessage = (message: string) => {
     return `## Chat Screen: ${message}`;
   };
+  const [submitChatCompletion] = chatCompletionsApi();
 
   // const [messages, setMessages] = useState<Message[]>([]);
   const [messages, setMessages] = useState<ChatCompletionResponseDTO[]>([]);
@@ -27,11 +29,22 @@ export default React.memo((props: RootStackParamList<'Chat'>) => {
     const alignSelf =
       item.choices?.[0]?.message?.role === 'user' ? 'flex-end' : 'flex-start';
     const backgroundColor =
-      item.choices?.[0]?.message?.role === 'user' ? 'blue' : 'grey';
+      item.choices?.[0]?.message?.role === 'user' ? '#87CEEB' : 'grey';
+
+    const color =
+      item.choices?.[0]?.message?.role === 'user' ? 'white' : 'black';
 
     return (
-      <View style={{alignSelf, backgroundColor, borderRadius: vs(8)}}>
-        <Text>{item.choices?.[0]?.message?.content}</Text>
+      <View
+        style={{
+          alignSelf,
+          backgroundColor,
+          borderRadius: vs(8),
+          padding: ms(8),
+        }}>
+        <Text style={{color: color}}>
+          {item.choices?.[0]?.message?.content}
+        </Text>
       </View>
     );
   };
@@ -39,6 +52,7 @@ export default React.memo((props: RootStackParamList<'Chat'>) => {
   const onSubmitPress = async (data: FormValues) => {
     console.log(getLogMessage('data'), data);
     Keyboard.dismiss();
+    setValue('search', '');
     const newMessage: ChatCompletionResponseDTO = {
       choices: [
         {
@@ -71,6 +85,26 @@ export default React.memo((props: RootStackParamList<'Chat'>) => {
     // messagesss.push(newMessage);
     // setMessages(messagesss);
     // console.log(getLogMessage('messagesss'), messagesss);
+
+    const formData = {
+      model: 'gpt-3.5-turbo',
+      messages: [
+        {
+          role: 'user',
+          content: data.search,
+        },
+      ],
+    };
+
+    try {
+      const result = await chatCompletionsApi({body: formData}).unwrap();
+
+      // Handle the result (result.data contains the response data)
+      console.log(getLogMessage('result'), result.data);
+    } catch (error) {
+      // Handle errors
+      console.error(error);
+    }
   };
 
   type FormValues = {
@@ -80,6 +114,7 @@ export default React.memo((props: RootStackParamList<'Chat'>) => {
   const {
     control,
     handleSubmit,
+    setValue,
     formState: {errors: formErrors},
     getValues,
   } = useForm<FormValues>({
@@ -167,9 +202,9 @@ export default React.memo((props: RootStackParamList<'Chat'>) => {
   );
 
   const getMessagesContent = () => (
-    <View>
+    <View style={{flex: 1, padding: ms(16)}}>
       <FlatList
-        keyExtractor={item => item.id}
+        keyExtractor={item => item.id.toString()}
         data={messages}
         renderItem={renderMessage}
         style={{flex: 1}}
