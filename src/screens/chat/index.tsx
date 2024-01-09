@@ -1,7 +1,6 @@
 import React, {useState} from 'react';
-import {ImageBackground, Keyboard, View} from 'react-native';
+import {FlatList, ImageBackground, Keyboard, View} from 'react-native';
 import {
-  FlatList,
   IconButton,
   Text,
   TextInput,
@@ -20,8 +19,8 @@ export default React.memo((props: RootStackParamList<'Chat'>) => {
     return `## Chat Screen: ${message}`;
   };
 
-  const [messages, setMessages] = useState<Message[]>([]);
-
+  // const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ChatCompletionResponseDTO[]>([]);
   const {navigation} = props;
 
   const renderMessage = ({item}: {item: ChatCompletionResponseDTO}) => {
@@ -40,14 +39,38 @@ export default React.memo((props: RootStackParamList<'Chat'>) => {
   const onSubmitPress = async (data: FormValues) => {
     console.log(getLogMessage('data'), data);
     Keyboard.dismiss();
-    const newMessage: Message = {
-      content: data.search,
-      role: 'user',
+    const newMessage: ChatCompletionResponseDTO = {
+      choices: [
+        {
+          finishReason: '',
+          index: 0,
+          message: {
+            content: data.search,
+            role: 'user',
+          },
+        },
+      ],
+      created: Date.now(),
+      id: String(Date.now()),
+      model: '',
+      objectX: '',
+      usage: {
+        completionTokens: 0,
+        promptTokens: 0,
+        totalTokens: 0,
+      },
     };
-    let messagesss = Array.from(messages);
-    messagesss.push(newMessage);
-    setMessages(messagesss);
-    console.log(getLogMessage('messagesss'), messagesss);
+
+    // Use the spread operator to create a new array with the new message appended
+    setMessages(prevMessages => [...prevMessages, newMessage]);
+    // const newMessage: Message = {
+    //   content: data.search,
+    //   role: 'user',
+    // };
+    // let messagesss = Array.from(messages);
+    // messagesss.push(newMessage);
+    // setMessages(messagesss);
+    // console.log(getLogMessage('messagesss'), messagesss);
   };
 
   type FormValues = {
@@ -146,10 +169,10 @@ export default React.memo((props: RootStackParamList<'Chat'>) => {
   const getMessagesContent = () => (
     <View>
       <FlatList
-        keyExtractor={item => item.content}
+        keyExtractor={item => item.id}
         data={messages}
         renderItem={renderMessage}
-        style={{backgroundColor: 'red', height: 500}}
+        style={{flex: 1}}
       />
     </View>
   );
