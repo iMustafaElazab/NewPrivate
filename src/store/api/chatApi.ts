@@ -3,7 +3,7 @@ import {api} from './baseApi';
 
 export const chatApi = api.injectEndpoints({
   endpoints: builder => ({
-    chatAll: builder.mutation<any, ApiRequest>({
+    chatCompletions: builder.mutation<any, ApiRequest>({
       query: apiRequest => ({
         url: 'chat/completions',
         method: 'POST',
@@ -14,4 +14,4 @@ export const chatApi = api.injectEndpoints({
   overrideExisting: false,
 });
 
-export const {useChatAllMutation: chatAll} = chatApi;
+export const {useChatCompletionsMutation: chatCompletionsApi} = chatApi;
