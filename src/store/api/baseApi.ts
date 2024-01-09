@@ -17,14 +17,17 @@ export const api = createApi({
     baseUrl: Config.API_URL,
     timeout: normalTimeout,
     prepareHeaders: (headers, {getState}) => {
-      const apiToken = (getState() as RootState).user.user?.apiToken;
+      // const apiToken = (getState() as RootState).user.user?.apiToken;
 
-      if (apiToken) {
-        headers.set('Authorization', apiToken);
-      }
-
+      // if (apiToken) {
+      //   headers.set('Authorization', apiToken);
+      // }
+      headers.set(
+        'Authorization',
+        'Bearer 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',
+      );
       headers.set('Accept', 'application/json');
-      headers.set('Accept-Language', getCurrentLocale());
+      // headers.set('Accept-Language', getCurrentLocale());
       return headers;
     },
   }),
