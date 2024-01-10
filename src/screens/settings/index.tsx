@@ -5,19 +5,23 @@ import {Controller, useForm} from 'react-hook-form';
 import {TouchableOpacity, View} from 'react-native';
 import {Appbar} from 'react-native-paper';
 import {ScaledSheet, ms, s, vs} from 'react-native-size-matters';
+import {useDispatch} from 'react-redux';
 import {
   Button,
   Text,
   TextInput,
   nameRegExp,
 } from 'roqay-react-native-common-components';
-import {RootStackParamList} from 'types/navigation';
+import {setApiKey} from 'store/user';
+import {RootStackScreenProps} from 'types/navigation';
 import {openUrl} from 'utils/LinkingUtils';
 
-export default React.memo((props: RootStackParamList<'Settings'>) => {
+export default React.memo((props: RootStackScreenProps<'Settings'>) => {
   const getLogMessage = (message: string) => {
     return `## Settings Screen: ${message}`;
   };
+
+  const dispatch = useDispatch();
 
   const {navigation} = props;
 
@@ -38,9 +42,8 @@ export default React.memo((props: RootStackParamList<'Settings'>) => {
 
   const onSubmitPress = async (data: FormValues) => {
     await setString(LocalStorageKeys.API_KEY, data.input);
-    const name = await getString(LocalStorageKeys.API_KEY);
     console.log(getLogMessage('data'), data);
-    console.log(getLogMessage('name'), name);
+    navigation.goBack();
   };
 
   const getHeaderContent = () => (
@@ -81,10 +84,6 @@ export default React.memo((props: RootStackParamList<'Settings'>) => {
           required: {
             value: true,
             message: 'Field is Invalid',
-          },
-          pattern: {
-            value: nameRegExp,
-            message: 'Invalid Field',
           },
         }}
         render={({field: {onChange, onBlur, value}}) => (

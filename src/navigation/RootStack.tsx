@@ -10,6 +10,7 @@ import login from 'screens/login';
 import register from 'screens/register';
 import chat from 'screens/chat';
 import settings from 'screens/settings';
+import image from 'screens/image';
 
 // Navigators.
 // TODO: Add navigators imports here.
@@ -31,6 +32,7 @@ export default React.memo(() => {
       <Stack.Screen name="Register" component={register} />
       <Stack.Screen name="Chat" component={chat} />
       <Stack.Screen name="Settings" component={settings} />
+      <Stack.Screen name="Image" component={image} />
 
       {/* Navigators */}
       {/* TODO: Add nested navigators here. */}

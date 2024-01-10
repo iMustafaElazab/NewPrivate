@@ -1,4 +1,5 @@
 interface ChatCompletionResponseDTO {
+  [x: string]: any;
   choices?: (Choice | null)[] | null;
   created?: number | null;
   id?: string | null;

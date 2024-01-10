@@ -1,47 +1,59 @@
+import AppColors from 'enums/AppColors';
 import React from 'react';
-import {View} from 'react-native';
-import {Text} from 'react-native-paper';
-import {useDispatch, useSelector} from 'react-redux';
-import {getHomeApi} from 'store/api/homeApi';
-import {RootState, getHomeResult} from 'store/index';
-import {isErrorWithStatus} from 'utils/ErrorHandlingUtils';
+import {ImageBackground, View} from 'react-native';
+import {ms, vs} from 'react-native-size-matters';
+import {Button, IconButton} from 'roqay-react-native-common-components';
+import {RootStackScreenProps} from 'types/navigation';
 
-export default React.memo(() => {
+export default React.memo((props: RootStackScreenProps<'Home'>) => {
   // #region Logger
   const getLogMessage = (message: string) => {
     return `## Home Screen: ${message}`;
   };
 
-  const dispatch = useDispatch();
-  const {products, banners, ads, error} = useSelector(
-    (state: RootState) => state.home,
+  const {navigation} = props;
+
+  const getSettingsDir = () => (
+    <IconButton
+      iconName={'cog-outline'}
+      onPress={() => {
+        navigation.navigate('Settings');
+      }}
+      size={vs(40)}
+      style={{
+        backgroundColor: AppColors.INVERSE_PRIMARY,
+        borderRadius: 12,
+        alignSelf: 'flex-end',
+        margin: ms(32),
+      }}
+    />
   );
 
-  const {
-    data,
-    isLoading: isHomeLoading,
-    isFetching: isHomeFetching,
-    error: homeError,
-    refetch: refetchHome,
-  } = getHomeApi({});
-
-  React.useEffect(() => {
-    // Check if error is session expired then show it in dialog for logout purpose.
-    if (homeError && isErrorWithStatus(401, homeError)) {
-      //  dispatch(setErrorDialogMessage(translate('session_expired')));
-    }
-
-    if (data) {
-      console.log(getLogMessage('data'), data);
-      dispatch(getHomeResult(data));
-      getLogMessage(JSON.stringify(data));
-    }
-  }, [isHomeLoading, isHomeFetching, homeError, data, dispatch]);
-
-  return (
-    <View>
-      <Text>jsdljlsjlf</Text>
-      <Text>{error}</Text>
-    </View>
+  const getPageContent = () => (
+    <ImageBackground
+      source={require('../../assets/images/background.png')}
+      style={{flex: 1}}>
+      {getSettingsDir()}
+      <View
+        style={{
+          flex: 1,
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}>
+        <Button
+          text="ChatGpt"
+          style={{width: '50%', marginVertical: vs(8), padding: 8}}
+          onPress={() => navigation.navigate('Chat')}
+        />
+        <Button
+          text="Dalle -E"
+          style={{width: '50%', padding: 8}}
+          onPress={() => navigation.navigate('Image')}
+        />
+      </View>
+    </ImageBackground>
   );
+
+  return <>{getPageContent()}</>;
 });

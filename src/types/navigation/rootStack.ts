@@ -7,6 +7,7 @@ type RootStackParamList = {
   Register: undefined;
   Chat: undefined;
   Settings: undefined;
+  Image: undefined;
 };
 
 type RootStackScreenProps<T extends keyof RootStackParamList> =

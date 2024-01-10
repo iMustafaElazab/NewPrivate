@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {FlatList, ImageBackground, Keyboard, View} from 'react-native';
+import React, {useState} from 'react';
+import {FlatList, Image, ImageBackground, Keyboard, View} from 'react-native';
 import {
   IconButton,
   Text,
@@ -10,84 +10,40 @@ import {Appbar} from 'react-native-paper';
 import {ScaledSheet, ms, s, vs} from 'react-native-size-matters';
 import {Controller, useForm} from 'react-hook-form';
 import AppColors from 'enums/AppColors';
-import ChatCompletionResponseDTO, {
-  Message,
-} from 'types/api/ChatCompletionResponseDTO';
-import {chatCompletionsApi} from '../../store/api/chatApi';
-import Voice from '@react-native-community/voice';
+import {imageCompletionsApi} from 'store/api/chatApi';
+import {Message} from 'types/api/ChatCompletionResponseDTO';
 
-export default React.memo((props: RootStackScreenProps<'Chat'>) => {
+export default React.memo((props: RootStackScreenProps<'Image'>) => {
   const getLogMessage = (message: string) => {
-    return `## Chat Screen: ${message}`;
+    return `## Image Screen: ${message}`;
   };
 
-  const [result, setResult] = useState('');
-  const [isLoading, setLoading] = useState(false);
-  const [submitChatCompletion] = chatCompletionsApi();
-  const [messages, setMessages] = useState<ChatCompletionResponseDTO[]>([]);
+  const [submitImageCompletion] = imageCompletionsApi();
+
+  const [messages, setMessages] = useState<Message[]>([]);
+  // const [messages, setMessages] = useState<ChatCompletionResponseDTO[]>([]);
+  //  const [messages, setMessages] = useState<Message[]>();
   const {navigation} = props;
 
-  const renderMessage = ({item}: {item: ChatCompletionResponseDTO}) => {
-    const color =
-      item.choices?.[0]?.message?.role === 'user' ? 'white' : 'black';
+  const renderMessage = ({item}: {item: Message}) => {
+    const color = item.role === 'user' ? 'white' : 'black';
 
-    const style =
-      item.choices?.[0]?.message?.role === 'user'
-        ? chatStyles.userMessage
-        : chatStyles.chatGptMessage;
+    // const style =
+    //   item.choices?.[0]?.message?.role === 'user'
+    //     ? chatStyles.userMessage
+    //     : chatStyles.chatGptMessage;
 
-    return (
-      <View style={style}>
-        <Text style={{color: color}}>
-          {item.choices?.[0]?.message?.content}
-        </Text>
-      </View>
-    );
-  };
-
-  useEffect(() => {
-    Voice.onSpeechStart = speechStartHandler;
-    Voice.onSpeechEnd = speechEndHandler;
-    Voice.onSpeechResults = speechResultsHandler;
-    return () => {
-      Voice.destroy().then(Voice.removeAllListeners);
-    };
-  }, []);
-
-  const speechStartHandler = e => {
-    console.log('speechStart successful', e);
-  };
-
-  const speechEndHandler = e => {
-    setLoading(false);
-    console.log('stop handler', e);
-  };
-
-  const speechResultsHandler = e => {
-    const text = e.value[0];
-    setResult(text);
-  };
-
-  const startRecording = async () => {
-    setLoading(true);
-    try {
-      await Voice.start('en-Us');
-    } catch (error) {
-      console.log('error', error);
+    if (item.role === 'user') {
+      return (
+        <View style={chatStyles.userMessage}>
+          <Text style={{color: color}}>{item?.content}</Text>
+        </View>
+      );
+    } else {
+      return (
+        <Image source={{uri: item.content}} style={chatStyles.imageMessage} />
+      );
     }
-  };
-
-  const stopRecording = async () => {
-    try {
-      await Voice.stop();
-      setLoading(false);
-    } catch (error) {
-      console.log('error', error);
-    }
-  };
-
-  const clear = () => {
-    setResult('');
   };
 
   const onSubmitPress = async (data: FormValues) => {
@@ -100,11 +56,13 @@ export default React.memo((props: RootStackScreenProps<'Chat'>) => {
     };
 
     // Use the spread operator to create a new array with the new message appended
-    setMessages(prevMessages => [
-      {choices: [{message: userMessage}]},
-      ...prevMessages,
-    ]);
-    // setMessages(prevMessages => [...prevMessages, newMessage]);
+    // setMessages(prevMessages => [
+    //   ...prevMessages,
+    //   {choices: [{message: userMessage}]},
+    // ]);
+
+    setMessages(prevMessages => [userMessage, ...prevMessages]);
+
     // const newMessage: Message = {
     //   content: data.search,
     //   role: 'user',
@@ -115,25 +73,30 @@ export default React.memo((props: RootStackScreenProps<'Chat'>) => {
     // console.log(getLogMessage('messagesss'), messagesss);
 
     const formData = {
-      model: 'gpt-3.5-turbo',
-      messages: [userMessage],
+      prompt: data.search,
+      size: '512x512',
     };
 
     try {
-      const result = await submitChatCompletion({body: formData}).unwrap();
+      const result = await submitImageCompletion({body: formData}).unwrap();
       console.log(
         getLogMessage('content'),
-        JSON.stringify(result.choices?.[0]?.message?.content),
+        JSON.stringify(result.data?.[0].url),
       );
 
-      const responseMessage = result?.choices?.[0]?.message;
+      const responseMessage = result.data?.[0].url;
 
       if (responseMessage) {
-        // Append the response message to the state
         setMessages(prevMessages => [
-          {choices: [{message: responseMessage}]},
+          {content: responseMessage, role: 'assistant'},
           ...prevMessages,
         ]);
+        // Append the response message to the state
+        // setMessages(prevMessages => [
+        //   ...prevMessages,
+        //   {choices: [{message: responseMessage}]},
+        // ]);
+        console.log(getLogMessage('responseMessage'), responseMessage);
       }
 
       // setMessages(result[0]);
@@ -167,7 +130,7 @@ export default React.memo((props: RootStackScreenProps<'Chat'>) => {
             navigation.goBack();
           }}
         />
-        <Appbar.Content title="ChatBot" />
+        <Appbar.Content title="DALL·E" />
       </Appbar.Header>
     </>
   );
@@ -189,8 +152,6 @@ export default React.memo((props: RootStackScreenProps<'Chat'>) => {
           errorProps={{errorMessage: formErrors.search?.message}}
           onBlur={onBlur}
           onChange={onChange}
-          // onChangeText={text => setResult(text)}
-          // value={result}
           onChangeText={onChange}
           value={value}
           underlineColor="transparent"
@@ -200,12 +161,7 @@ export default React.memo((props: RootStackScreenProps<'Chat'>) => {
   );
 
   const getMicInput = () => (
-    <IconButton
-      iconName="microphone"
-      size={25}
-      style={chatStyles.icon}
-      onPress={startRecording}
-    />
+    <IconButton iconName="microphone" size={25} style={chatStyles.icon} />
   );
 
   const getSendInput = () => (
@@ -298,13 +254,13 @@ const chatStyles = ScaledSheet.create({
     padding: ms(8),
     marginVertical: vs(4),
   },
-  chatGptMessage: {
+  imageMessage: {
     alignSelf: 'flex-start',
     backgroundColor: '#f3f2ed',
-    borderBottomEndRadius: vs(8),
-    borderTopStartRadius: vs(8),
-    borderTopEndRadius: vs(8),
     padding: ms(8),
+    borderRadius: 16,
+    height: ms(200),
+    width: ms(200),
     marginVertical: vs(4),
   },
 });

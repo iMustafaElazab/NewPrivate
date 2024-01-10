@@ -9,6 +9,7 @@ import {
   setUser as setStateUser,
   getUserApi,
   removeUser as removeStateUser,
+  setApiKey,
 } from 'store';
 import {
   getLanguage,
@@ -16,12 +17,14 @@ import {
   getUser as getLocalStorageUser,
   setUser as setLocalStorageUser,
   removeUser as removeLocalStorageUser,
+  getString,
 } from 'core';
 import type {RootStackScreenProps, User} from 'types';
 import {AppImages} from 'enums';
 import {isErrorWithStatus} from 'utils';
 
 import {Screen} from 'components';
+import LocalStorageKeys from 'core/LocalStorage/keys';
 
 export default React.memo((props: RootStackScreenProps<'Splash'>) => {
   // #region Logger
@@ -71,6 +74,19 @@ export default React.memo((props: RootStackScreenProps<'Splash'>) => {
       console.info(getLogMessage('language'), language);
       updateLanguage(language);
       setLanguageLoaded(true);
+    };
+
+    /*
+
+    getApiKeyFromLocalStroage
+
+    */
+
+    const getSavedApiKey = async () => {
+      const name = await getString(LocalStorageKeys.API_KEY);
+      if (name) {
+        dispatch(setApiKey({api_key: name}));
+      }
     };
 
     /**
@@ -148,6 +164,7 @@ export default React.memo((props: RootStackScreenProps<'Splash'>) => {
     if (bootSplashLogoIsLoaded) {
       getSavedLanguage();
       getSavedUser();
+      getSavedApiKey();
     }
   }, [bootSplashLogoIsLoaded, callGetUserApi, dispatch]);
 
@@ -191,7 +208,7 @@ export default React.memo((props: RootStackScreenProps<'Splash'>) => {
 
     const openNextScreen = () => {
       console.info(getLogMessage('openNextScreen'));
-      navigation.replace('Chat');
+      navigation.replace('Home');
       //navigation.replace(stateUser ? 'Home' : 'Login');
     };
 
