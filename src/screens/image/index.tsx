@@ -126,7 +126,7 @@ export default React.memo((props: RootStackScreenProps<'Image'>) => {
   const onSubmitPress = async (data: FormValues) => {
     console.log(getLogMessage('data'), data);
     Keyboard.dismiss();
-    setText('search');
+    setText('');
     const userMessage: Message = {
       content: text,
       role: 'user',
@@ -135,7 +135,7 @@ export default React.memo((props: RootStackScreenProps<'Image'>) => {
     setMessages(prevMessages => [userMessage, ...prevMessages]);
 
     const formData = {
-      prompt: data.search,
+      prompt: text,
       size: '512x512',
     };
 
