@@ -42,6 +42,10 @@ export default React.memo((props: RootStackScreenProps<'Settings'>) => {
 
   const onSubmitPress = async (data: FormValues) => {
     await setString(LocalStorageKeys.API_KEY, data.input);
+    const name = await getString(LocalStorageKeys.API_KEY);
+    if (name) {
+      dispatch(setApiKey({api_key: name}));
+    }
     console.log(getLogMessage('data'), data);
     navigation.goBack();
   };

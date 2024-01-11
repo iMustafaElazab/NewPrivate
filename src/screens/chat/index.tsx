@@ -6,7 +6,7 @@ import {
   TextInput,
 } from 'roqay-react-native-common-components';
 import {RootStackScreenProps} from 'types/navigation';
-import {Appbar} from 'react-native-paper';
+import {ActivityIndicator, Appbar} from 'react-native-paper';
 import {ScaledSheet, ms, s, vs} from 'react-native-size-matters';
 import {Controller, useForm} from 'react-hook-form';
 import AppColors from 'enums/AppColors';
@@ -15,14 +15,17 @@ import ChatCompletionResponseDTO, {
 } from 'types/api/ChatCompletionResponseDTO';
 import {chatCompletionsApi} from '../../store/api/chatApi';
 import Voice from '@react-native-community/voice';
+import Tts from 'react-native-tts';
+import Share from 'react-native-share';
 
 export default React.memo((props: RootStackScreenProps<'Chat'>) => {
   const getLogMessage = (message: string) => {
     return `## Chat Screen: ${message}`;
   };
 
-  const [result, setResult] = useState('');
+  const [text, setText] = useState('');
   const [isLoading, setLoading] = useState(false);
+
   const [submitChatCompletion] = chatCompletionsApi();
   const [messages, setMessages] = useState<ChatCompletionResponseDTO[]>([]);
   const {navigation} = props;
@@ -31,18 +34,63 @@ export default React.memo((props: RootStackScreenProps<'Chat'>) => {
     const color =
       item.choices?.[0]?.message?.role === 'user' ? 'white' : 'black';
 
-    const style =
-      item.choices?.[0]?.message?.role === 'user'
-        ? chatStyles.userMessage
-        : chatStyles.chatGptMessage;
+    if (item.choices?.[0]?.message?.role === 'user') {
+      return (
+        <View style={chatStyles.userMessage}>
+          <Text style={{color: color}}>
+            {item.choices?.[0]?.message?.content}
+          </Text>
+        </View>
+      );
+    } else {
+      return (
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+          }}>
+          <View style={chatStyles.chatGptMessage}>
+            <Text style={{color: color}}>
+              {item.choices?.[0]?.message?.content}
+            </Text>
+            <View style={{flexDirection: 'row', alignSelf: 'flex-end'}}>
+              <IconButton
+                iconName="microphone"
+                size={25}
+                style={chatStyles.icon}
+                onPress={() =>
+                  submitMicTts(item.choices?.[0]?.message?.content)
+                }
+              />
+            </View>
+          </View>
+          <IconButton
+            iconName="share"
+            size={25}
+            style={chatStyles.icon}
+            onPress={() => shareContent(item.choices?.[0]?.message?.content)}
+          />
+        </View>
+      );
+    }
+  };
 
-    return (
-      <View style={style}>
-        <Text style={{color: color}}>
-          {item.choices?.[0]?.message?.content}
-        </Text>
-      </View>
-    );
+  const submitMicTts = async (content: string | undefined | null) => {
+    Tts.getInitStatus().then(() => {
+      Tts.stop();
+      Tts.speak(content);
+    });
+  };
+
+  const shareContent = (message: string | undefined | null) => {
+    Share.open({message})
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        err && console.log(err);
+      });
   };
 
   useEffect(() => {
@@ -65,7 +113,7 @@ export default React.memo((props: RootStackScreenProps<'Chat'>) => {
 
   const speechResultsHandler = e => {
     const text = e.value[0];
-    setResult(text);
+    setText(text);
   };
 
   const startRecording = async () => {
@@ -87,23 +135,24 @@ export default React.memo((props: RootStackScreenProps<'Chat'>) => {
   };
 
   const clear = () => {
-    setResult('');
+    setText('');
   };
 
   const onSubmitPress = async (data: FormValues) => {
     console.log(getLogMessage('data'), data);
     Keyboard.dismiss();
+    setText('');
     setValue('search', '');
     const userMessage: Message = {
-      content: data.search,
+      content: text,
       role: 'user',
     };
 
-    // Use the spread operator to create a new array with the new message appended
     setMessages(prevMessages => [
       {choices: [{message: userMessage}]},
       ...prevMessages,
     ]);
+
     // setMessages(prevMessages => [...prevMessages, newMessage]);
     // const newMessage: Message = {
     //   content: data.search,
@@ -189,24 +238,31 @@ export default React.memo((props: RootStackScreenProps<'Chat'>) => {
           errorProps={{errorMessage: formErrors.search?.message}}
           onBlur={onBlur}
           onChange={onChange}
-          // onChangeText={text => setResult(text)}
-          // value={result}
-          onChangeText={onChange}
-          value={value}
+          onChangeText={text => setResult(text)}
+          value={result}
+          // onChangeText={onChange}
+          // value={value}
           underlineColor="transparent"
         />
       )}
     />
   );
 
-  const getMicInput = () => (
-    <IconButton
-      iconName="microphone"
-      size={25}
-      style={chatStyles.icon}
-      onPress={startRecording}
-    />
-  );
+  const getMicInput = () =>
+    isLoading ? (
+      <ActivityIndicator
+        size="small"
+        color="black"
+        style={{marginStart: s(6)}}
+      />
+    ) : (
+      <IconButton
+        iconName="microphone"
+        size={25}
+        style={chatStyles.icon}
+        onPress={startRecording}
+      />
+    );
 
   const getSendInput = () => (
     <IconButton
@@ -227,7 +283,17 @@ export default React.memo((props: RootStackScreenProps<'Chat'>) => {
         alignItems: 'center',
       }}>
       {getMicInput()}
-      {getInput()}
+
+      {
+        <TextInput
+          style={chatStyles.input}
+          placeholder="Search"
+          errorProps={{errorMessage: formErrors.search?.message}}
+          onChangeText={(text: string) => setText(text)}
+          value={text}
+          underlineColor="transparent"
+        />
+      }
     </View>
   );
 
@@ -249,10 +315,9 @@ export default React.memo((props: RootStackScreenProps<'Chat'>) => {
       />
     </View>
   );
-
   const getPageContent = () => (
     <ImageBackground
-      source={require('../../assets/images/background.png')}
+      source={require('../../assets/images/background.jpg')}
       style={{flex: 1}}>
       {getHeaderContent()}
       {getMessagesContent()}

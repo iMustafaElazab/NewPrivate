@@ -13,43 +13,40 @@ export default React.memo((props: RootStackScreenProps<'Home'>) => {
 
   const {navigation} = props;
 
-  const getSettingsDir = () => (
-    <IconButton
-      iconName={'cog-outline'}
-      onPress={() => {
-        navigation.navigate('Settings');
-      }}
-      size={vs(40)}
-      style={{
-        backgroundColor: AppColors.INVERSE_PRIMARY,
-        borderRadius: 12,
-        alignSelf: 'flex-end',
-        margin: ms(32),
-      }}
-    />
-  );
-
   const getPageContent = () => (
     <ImageBackground
-      source={require('../../assets/images/background.png')}
+      source={require('../../assets/images/background.jpg')}
       style={{flex: 1}}>
-      {getSettingsDir()}
       <View
         style={{
           flex: 1,
-          flexDirection: 'column',
           justifyContent: 'center',
           alignItems: 'center',
         }}>
         <Button
           text="ChatGpt"
-          style={{width: '50%', marginVertical: vs(8), padding: 8}}
+          style={{
+            width: '50%',
+            marginVertical: vs(8),
+            padding: 8,
+            backgroundColor: '#74AA9C',
+          }}
           onPress={() => navigation.navigate('Chat')}
         />
         <Button
-          text="Dalle -E"
-          style={{width: '50%', padding: 8}}
+          text="Dall -E"
+          style={{
+            width: '50%',
+            padding: 8,
+            marginVertical: vs(8),
+            backgroundColor: 'black',
+          }}
           onPress={() => navigation.navigate('Image')}
+        />
+        <Button
+          text="Settings"
+          style={{width: '50%', marginVertical: vs(8), padding: 8}}
+          onPress={() => navigation.navigate('Settings')}
         />
       </View>
     </ImageBackground>

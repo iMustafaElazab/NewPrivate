@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList, Image, ImageBackground, Keyboard, View} from 'react-native';
 import {
   IconButton,
@@ -6,12 +6,15 @@ import {
   TextInput,
 } from 'roqay-react-native-common-components';
 import {RootStackScreenProps} from 'types/navigation';
-import {Appbar} from 'react-native-paper';
+import {ActivityIndicator, Appbar} from 'react-native-paper';
 import {ScaledSheet, ms, s, vs} from 'react-native-size-matters';
 import {Controller, useForm} from 'react-hook-form';
 import AppColors from 'enums/AppColors';
 import {imageCompletionsApi} from 'store/api/chatApi';
 import {Message} from 'types/api/ChatCompletionResponseDTO';
+import Share from 'react-native-share';
+import {openUrl} from 'utils/LinkingUtils';
+import Voice from '@react-native-community/voice';
 
 export default React.memo((props: RootStackScreenProps<'Image'>) => {
   const getLogMessage = (message: string) => {
@@ -20,57 +23,116 @@ export default React.memo((props: RootStackScreenProps<'Image'>) => {
 
   const [submitImageCompletion] = imageCompletionsApi();
 
+  const [text, setText] = useState('');
+  const [isLoading, setLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
-  // const [messages, setMessages] = useState<ChatCompletionResponseDTO[]>([]);
-  //  const [messages, setMessages] = useState<Message[]>();
   const {navigation} = props;
 
   const renderMessage = ({item}: {item: Message}) => {
     const color = item.role === 'user' ? 'white' : 'black';
 
-    // const style =
-    //   item.choices?.[0]?.message?.role === 'user'
-    //     ? chatStyles.userMessage
-    //     : chatStyles.chatGptMessage;
-
     if (item.role === 'user') {
       return (
-        <View style={chatStyles.userMessage}>
+        <View style={imageStyles.userImageMessage}>
           <Text style={{color: color}}>{item?.content}</Text>
         </View>
       );
     } else {
       return (
-        <Image source={{uri: item.content}} style={chatStyles.imageMessage} />
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+          }}>
+          <Image
+            source={{uri: item.content}}
+            style={imageStyles.imageMessage}
+          />
+          <IconButton
+            iconName="share"
+            size={25}
+            style={imageStyles.icon}
+            onPress={() => shareContent(item.content)}
+          />
+          <IconButton
+            iconName="download"
+            size={25}
+            style={imageStyles.icon}
+            onPress={() => downloadImage(item.content)}
+          />
+        </View>
       );
     }
+  };
+
+  useEffect(() => {
+    Voice.onSpeechStart = speechStartHandler;
+    Voice.onSpeechEnd = speechEndHandler;
+    Voice.onSpeechResults = speechResultsHandler;
+    return () => {
+      Voice.destroy().then(Voice.removeAllListeners);
+    };
+  }, []);
+
+  const speechStartHandler = e => {
+    console.log('speechStart successful', e);
+  };
+
+  const speechEndHandler = e => {
+    setLoading(false);
+    console.log('stop handler', e);
+  };
+
+  const speechResultsHandler = e => {
+    const text = e.value[0];
+    setText(text);
+  };
+
+  const startRecording = async () => {
+    setLoading(true);
+    try {
+      await Voice.start('en-Us');
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const stopRecording = async () => {
+    try {
+      await Voice.stop();
+      setLoading(false);
+    } catch (error) {
+      console.log('error', error);
+    }
+  };
+
+  const clear = () => {
+    setText('');
+  };
+  const shareContent = (url: string | undefined | null) => {
+    Share.open({url})
+      .then(res => {
+        console.log(res);
+      })
+      .catch(err => {
+        err && console.log(err);
+      });
+  };
+  const downloadImage = (url: string | undefined | null) => {
+    openUrl(url);
   };
 
   const onSubmitPress = async (data: FormValues) => {
     console.log(getLogMessage('data'), data);
     Keyboard.dismiss();
-    setValue('search', '');
+    setText('search');
     const userMessage: Message = {
-      content: data.search,
+      content: text,
       role: 'user',
     };
 
-    // Use the spread operator to create a new array with the new message appended
-    // setMessages(prevMessages => [
-    //   ...prevMessages,
-    //   {choices: [{message: userMessage}]},
-    // ]);
-
     setMessages(prevMessages => [userMessage, ...prevMessages]);
-
-    // const newMessage: Message = {
-    //   content: data.search,
-    //   role: 'user',
-    // };
-    // let messagesss = Array.from(messages);
-    // messagesss.push(newMessage);
-    // setMessages(messagesss);
-    // console.log(getLogMessage('messagesss'), messagesss);
 
     const formData = {
       prompt: data.search,
@@ -91,17 +153,10 @@ export default React.memo((props: RootStackScreenProps<'Image'>) => {
           {content: responseMessage, role: 'assistant'},
           ...prevMessages,
         ]);
-        // Append the response message to the state
-        // setMessages(prevMessages => [
-        //   ...prevMessages,
-        //   {choices: [{message: responseMessage}]},
-        // ]);
+
         console.log(getLogMessage('responseMessage'), responseMessage);
       }
-
-      // setMessages(result[0]);
     } catch (error) {
-      // Handle errors
       console.log(getLogMessage('content'), error);
     }
   };
@@ -147,7 +202,7 @@ export default React.memo((props: RootStackScreenProps<'Image'>) => {
       }}
       render={({field: {onChange, onBlur, value}}) => (
         <TextInput
-          style={chatStyles.input}
+          style={imageStyles.input}
           placeholder="Search"
           errorProps={{errorMessage: formErrors.search?.message}}
           onBlur={onBlur}
@@ -155,14 +210,28 @@ export default React.memo((props: RootStackScreenProps<'Image'>) => {
           onChangeText={onChange}
           value={value}
           underlineColor="transparent"
+          underlineColorAndroid={'transparent'}
+          returnKeyType="done"
         />
       )}
     />
   );
 
-  const getMicInput = () => (
-    <IconButton iconName="microphone" size={25} style={chatStyles.icon} />
-  );
+  const getMicInput = () =>
+    isLoading ? (
+      <ActivityIndicator
+        size="small"
+        color="black"
+        style={{marginStart: s(6)}}
+      />
+    ) : (
+      <IconButton
+        iconName="microphone"
+        size={25}
+        style={imageStyles.icon}
+        onPress={startRecording}
+      />
+    );
 
   const getSendInput = () => (
     <IconButton
@@ -183,12 +252,21 @@ export default React.memo((props: RootStackScreenProps<'Image'>) => {
         alignItems: 'center',
       }}>
       {getMicInput()}
-      {getInput()}
+      {
+        <TextInput
+          style={imageStyles.input}
+          placeholder="Search"
+          errorProps={{errorMessage: formErrors.search?.message}}
+          onChangeText={(text: string) => setText(text)}
+          value={text}
+          underlineColor="transparent"
+        />
+      }
     </View>
   );
 
   const getBottomContent = () => (
-    <View style={chatStyles.row}>
+    <View style={imageStyles.row}>
       {getChatContent()}
       {getSendInput()}
     </View>
@@ -208,7 +286,7 @@ export default React.memo((props: RootStackScreenProps<'Image'>) => {
 
   const getPageContent = () => (
     <ImageBackground
-      source={require('../../assets/images/background.png')}
+      source={require('../../assets/images/background.jpg')}
       style={{flex: 1}}>
       {getHeaderContent()}
       {getMessagesContent()}
@@ -219,7 +297,7 @@ export default React.memo((props: RootStackScreenProps<'Image'>) => {
   return <View style={{flex: 1}}>{getPageContent()}</View>;
 });
 
-const chatStyles = ScaledSheet.create({
+const imageStyles = ScaledSheet.create({
   bottom: {
     backgroundColor: 'aquamarine',
   },
@@ -245,7 +323,7 @@ const chatStyles = ScaledSheet.create({
     borderRadius: 12,
     marginStart: s(8),
   },
-  userMessage: {
+  userImageMessage: {
     alignSelf: 'flex-end',
     backgroundColor: '#60beda',
     borderBottomStartRadius: vs(8),
