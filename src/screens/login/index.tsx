@@ -1,24 +1,23 @@
-import React, {useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {
-  KeyboardAvoidingView,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import {SafeAreaView, ScrollView, TouchableOpacity, View} from 'react-native';
 import {
   Button,
-  ScrollView,
   Text,
   TextInput,
   emailRegExp,
-  strictPasswordRegExp,
+  defaultPasswordRegExp,
 } from 'roqay-react-native-common-components';
 import loginStyles from './styles';
 import {vs} from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AppColors from 'enums/AppColors';
 import type {RootStackScreenProps} from 'types';
+import {loginApi} from 'store/api';
+import {removeLoadingDialog, showLoadingDialog} from 'store/dialogs';
+import {handleErrorInDialog} from 'utils/ErrorHandlingUtils';
+import {useDispatch} from 'react-redux';
+import {setUser} from 'store/user';
 
 export default React.memo((props: RootStackScreenProps<'Login'>) => {
   const {navigation} = props;
@@ -28,9 +27,12 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
   };
   const [showPassword, setShowPassword] = useState(false);
 
+  const dispatch = useDispatch();
   const handleIcon = () => {
     setShowPassword(!showPassword);
   };
+
+  const [submitLogin] = loginApi();
 
   type FormValues = {
     email?: string;
@@ -50,7 +52,24 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
   });
 
   const onSubmitPress = async (data: FormValues) => {
-    console.log(getLogMessage('data'), data);
+    dispatch(showLoadingDialog());
+    try {
+      const formData = {
+        email: data.email,
+        password: data.password,
+      };
+      const result = await submitLogin({body: formData}).unwrap();
+      console.info(getLogMessage('result'), result);
+      // if (result.status === true) {
+      //   navigation.navigate('Home');
+      // } else {
+      //   showDataError(result.message, 'error_login');
+      // }
+    } catch (error) {
+      handleErrorInDialog(error, 'error_login');
+    } finally {
+      dispatch(removeLoadingDialog());
+    }
   };
 
   const getHeaderTitle = () => (
@@ -65,10 +84,10 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
   );
 
   const getFooterContent = () => (
-    <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-      <Text
-        variant="bodyLarge"
-        style={[{fontWeight: '600'}, loginStyles.bottomContent]}>
+    <TouchableOpacity
+      style={loginStyles.bottomContent}
+      onPress={() => navigation.navigate('Register')}>
+      <Text variant="bodyLarge" style={[{fontWeight: '600'}]}>
         Don't Have Account Sign In
       </Text>
     </TouchableOpacity>
@@ -92,13 +111,14 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
         <TextInput
           topLabelProps={topLabelProps('Email Address')}
           style={loginStyles.input}
+          placeholder="name@example.com"
           keyboardType="email-address"
           errorProps={{errorMessage: formErrors.email?.message}}
           onBlur={onBlur}
           onChange={onChange}
           onChangeText={onChange}
           value={value}
-          returnKeyType="next"
+          returnKeyType={'done'}
         />
       )}
     />
@@ -114,7 +134,7 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
           message: 'Field is Invalid',
         },
         pattern: {
-          value: strictPasswordRegExp,
+          value: defaultPasswordRegExp,
           message: 'Invalid Field',
         },
       }}
@@ -122,6 +142,7 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
         <TextInput
           topLabelProps={topLabelProps('Password')}
           style={loginStyles.input}
+          placeholder="********"
           keyboardType="numbers-and-punctuation"
           errorProps={{errorMessage: formErrors.password?.message}}
           onBlur={onBlur}
@@ -138,7 +159,7 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
             </TouchableOpacity>
           }
           secureTextEntry={!showPassword}
-          returnKeyType={'done'}
+          returnKeyType={'go'}
         />
       )}
     />
@@ -179,9 +200,9 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
   );
 
   return (
-    <ScrollView contentContainerStyle={{flex: 1, flexGrow: 1}}>
+    <View style={{flex: 1, alignItems: 'stretch', justifyContent: 'center'}}>
       {getPageContent()}
       {getFooterContent()}
-    </ScrollView>
+    </View>
   );
 });

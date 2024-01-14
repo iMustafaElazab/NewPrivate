@@ -1,5 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, ImageBackground, Keyboard, View} from 'react-native';
+import {
+  FlatList,
+  ImageBackground,
+  Keyboard,
+  Platform,
+  View,
+} from 'react-native';
 import {
   IconButton,
   Text,
@@ -116,15 +122,32 @@ export default React.memo((props: RootStackScreenProps<'Chat'>) => {
     setText(text);
   };
 
+  const checkMicInput = (isLoading: boolean) => {
+    isLoading ? startRecording : stopRecording;
+  };
+
   const startRecording = async () => {
     setLoading(true);
     try {
-      await Voice.start('en-Us');
-    } catch (error) {
-      console.log('error', error);
+      Platform.OS === 'ios';
+      {
+        setTimeout(() => {
+          destroyRecognizer();
+        }, 5000);
+      }
+      await Voice.start('en-US');
+    } catch (e) {
+      console.error(e);
     }
   };
 
+  const destroyRecognizer = async () => {
+    try {
+      await Voice.destroy();
+    } catch (e) {
+      console.error(e);
+    }
+  };
   const stopRecording = async () => {
     try {
       await Voice.stop();
@@ -141,7 +164,8 @@ export default React.memo((props: RootStackScreenProps<'Chat'>) => {
   const onSubmitPress = async (data: FormValues) => {
     console.log(getLogMessage('data'), data);
     Keyboard.dismiss();
-    setText('');
+    setLoading(false);
+    clear();
     setValue('search', '');
     const userMessage: Message = {
       content: text,

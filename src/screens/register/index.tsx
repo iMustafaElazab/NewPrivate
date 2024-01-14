@@ -9,7 +9,8 @@ import {
   Button,
   TextInput,
   emailRegExp,
-  strictPasswordRegExp,
+  defaultPasswordRegExp,
+  ScrollView,
 } from 'roqay-react-native-common-components';
 import loginStyles from 'screens/login/styles';
 import {RootStackScreenProps} from 'types/navigation';
@@ -87,7 +88,8 @@ export default React.memo((props: RootStackScreenProps<'Register'>) => {
       render={({field: {onChange, onBlur, value}}) => (
         <TextInput
           placeholder="Name"
-          style={loginStyles.input}
+          style={[loginStyles.input, {marginTop: vs(16)}]}
+          mode="outlined"
           errorProps={{errorMessage: formErrors.name?.message}}
           onBlur={onBlur}
           onChange={onChange}
@@ -115,7 +117,8 @@ export default React.memo((props: RootStackScreenProps<'Register'>) => {
       render={({field: {onChange, onBlur, value}}) => (
         <TextInput
           placeholder="Email"
-          style={loginStyles.input}
+          style={[loginStyles.input, {marginTop: vs(16)}]}
+          mode="outlined"
           keyboardType="email-address"
           errorProps={{errorMessage: formErrors.email?.message}}
           onBlur={onBlur}
@@ -138,14 +141,15 @@ export default React.memo((props: RootStackScreenProps<'Register'>) => {
           message: 'Field is Invalid',
         },
         pattern: {
-          value: strictPasswordRegExp,
+          value: defaultPasswordRegExp,
           message: 'Invalid Field',
         },
       }}
       render={({field: {onChange, onBlur, value}}) => (
         <TextInput
           placeholder="Password"
-          style={loginStyles.input}
+          style={[loginStyles.input, {marginTop: vs(16)}]}
+          mode="outlined"
           keyboardType="numbers-and-punctuation"
           errorProps={{errorMessage: formErrors.password?.message}}
           onBlur={onBlur}
@@ -183,7 +187,8 @@ export default React.memo((props: RootStackScreenProps<'Register'>) => {
       render={({field: {onChange, onBlur, value}}) => (
         <TextInput
           placeholder="Confrim-Password"
-          style={loginStyles.input}
+          style={[loginStyles.input, {marginTop: vs(16)}]}
+          mode="outlined"
           keyboardType="numbers-and-punctuation"
           errorProps={{errorMessage: formErrors.password?.message}}
           onBlur={onBlur}
@@ -227,23 +232,27 @@ export default React.memo((props: RootStackScreenProps<'Register'>) => {
   );
 
   const getFooterContent = () => (
-    <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-      <Text
-        variant="bodyLarge"
-        style={[{fontWeight: '600'}, loginStyles.bottomContent]}>
+    <TouchableOpacity
+      style={loginStyles.bottomContent}
+      onPress={() => navigation.navigate('Login')}>
+      <Text variant="bodyLarge" style={[{fontWeight: '600'}]}>
         Have Account Sign In
       </Text>
     </TouchableOpacity>
   );
 
   return (
-    <View style={{flex: 1, margin: vs(12), justifyContent: 'space-evenly'}}>
-      <View style={{flex: 0.2}}>
-        {BackAppBar()}
-        {getHeaderTitle()}
+    <ScrollView
+      style={{flex: 1}}
+      contentContainerStyle={{flex: 1, flexGrow: 1}}>
+      <View style={{flex: 1, margin: vs(12), justifyContent: 'space-evenly'}}>
+        <View style={{flex: 0.2}}>
+          {BackAppBar()}
+          {getHeaderTitle()}
+        </View>
+        <View style={{flex: 0.7}}>{getForm()}</View>
+        {getFooterContent()}
       </View>
-      <View style={{flex: 0.7}}>{getForm()}</View>
-      {getFooterContent()}
-    </View>
+    </ScrollView>
   );
 });
