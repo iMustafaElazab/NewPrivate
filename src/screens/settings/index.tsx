@@ -100,6 +100,8 @@ export default React.memo((props: RootStackScreenProps<'Settings'>) => {
             onChange={onChange}
             onChangeText={onChange}
             value={value}
+            multiline
+            numberOfLines={2}
           />
         )}
       />
@@ -137,7 +139,6 @@ const styles = ScaledSheet.create({
   input: {
     borderRadius: ms(8),
     backgroundColor: 'white',
-    height: ms(40),
   },
   btn: {
     marginHorizontal: s(16),

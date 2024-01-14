@@ -1,6 +1,11 @@
 import React, {useRef, useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {TouchableOpacity, TouchableWithoutFeedback, View} from 'react-native';
+import {
+  KeyboardAvoidingView,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native';
 import {
   Button,
   ScrollView,
@@ -139,7 +144,7 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
     />
   );
 
-   const topLabelProps = (label: string) => ({
+  const topLabelProps = (label: string) => ({
     label,
     textProps: {
       type: 'bold',
@@ -174,7 +179,7 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
   );
 
   return (
-    <ScrollView contentContainerStyle={{flex: 1}}>
+    <ScrollView contentContainerStyle={{flex: 1, flexGrow: 1}}>
       {getPageContent()}
       {getFooterContent()}
     </ScrollView>

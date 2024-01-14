@@ -24,7 +24,7 @@ export default React.memo((props: RootStackScreenProps<'Home'>) => {
           alignItems: 'center',
         }}>
         <Button
-          text="ChatGpt"
+          text="BotGPT"
           style={{
             width: '50%',
             marginVertical: vs(8),

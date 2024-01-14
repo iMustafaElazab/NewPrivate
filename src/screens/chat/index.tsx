@@ -216,7 +216,7 @@ export default React.memo((props: RootStackScreenProps<'Chat'>) => {
             navigation.goBack();
           }}
         />
-        <Appbar.Content title="ChatBot" />
+        <Appbar.Content title="BotGPT" />
       </Appbar.Header>
     </>
   );
