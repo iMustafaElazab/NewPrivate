@@ -17,10 +17,10 @@ export const api = createApi({
     baseUrl: Config.API_URL,
     timeout: normalTimeout,
     prepareHeaders: (headers, {getState}) => {
-      // const apiToken = (getState() as RootState).user.api_key;
-      // if (apiToken) {
-      //   headers.set('Authorization', `Bearer ${apiToken}`);
-      // }
+      const apiToken = (getState() as RootState).user.api_key;
+      if (apiToken) {
+        headers.set('Authorization', `Bearer ${apiToken}`);
+      }
       headers.set('Accept', 'application/json');
       // headers.set('Accept-Language', getCurrentLocale());
       return headers;

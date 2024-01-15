@@ -1,3 +1,4 @@
+import {RegisterResponse} from 'types/api/RegisterResponse';
 import {api} from './baseApi';
 import type {ApiRequest} from 'types';
 
@@ -15,6 +16,13 @@ export const authApi = api.injectEndpoints({
     logout: builder.mutation<any, void>({
       query: () => '/logout',
     }),
+    register: builder.mutation<RegisterResponse, ApiRequest>({
+      query: apiRequest => ({
+        url: '/register',
+        method: 'POST',
+        body: apiRequest.body,
+      }),
+    }),
     profile: builder.query<any, void>({
       query: () => '/profile',
     }),
@@ -27,4 +35,5 @@ export const {
   useLoginMutation: loginApi,
   useLogoutMutation: logoutApi,
   useProfileQuery: profileApi,
+  useRegisterMutation: registerApi,
 } = authApi;

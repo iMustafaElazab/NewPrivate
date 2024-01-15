@@ -42,10 +42,24 @@ enum AppColors {
   ELEVATION_LEVEL_3 = 'rgb(238, 232, 244)',
   ELEVATION_LEVEL_4 = 'rgb(236, 230, 243)',
   ELEVATION_LEVEL_5 = 'rgb(233, 227, 241)',
+  GREY_BACKGROUND = '#F9F9F9',
+  RED = '#F16F6F',
+  GREY_TXT = '#A7A7A7',
+  PERCENT_CONTAINER = '#E45526',
+  CONTAINER_BORDER = 'rgba(183, 183, 183, 0.16)',
+  CATEGORY_BORDER = '#CECECE',
+  GREEN = '#28BB6C',
+  BLUE = '#0275d8',
+  LIGHT_BLUE = '#41A3CD',
+  PURPLE = '#5F2088',
+  DARK_YELLOW = '#F0C419',
+  DARK_BLUE = '#548FFE',
+  LIGHT_BACKGROUND = '#FBFBFB',
+  DARK_RED = '#F12C2C',
+  BACKGROUND_VIEW = '#fafafa',
 
   // App colors.
   // TODO: Add app colors here.
-
 }
 
 export default AppColors;

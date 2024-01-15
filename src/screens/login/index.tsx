@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Controller, useForm} from 'react-hook-form';
-import {SafeAreaView, ScrollView, TouchableOpacity, View} from 'react-native';
+import {Image, View} from 'react-native';
 import {
   Button,
   Text,
@@ -8,8 +8,9 @@ import {
   emailRegExp,
   defaultPasswordRegExp,
 } from 'roqay-react-native-common-components';
+import {TextInput as PaperInput} from 'react-native-paper';
 import loginStyles from './styles';
-import {vs} from 'react-native-size-matters';
+import {ms, s, vs} from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AppColors from 'enums/AppColors';
 import type {RootStackScreenProps} from 'types';
@@ -17,7 +18,8 @@ import {loginApi} from 'store/api';
 import {removeLoadingDialog, showLoadingDialog} from 'store/dialogs';
 import {handleErrorInDialog} from 'utils/ErrorHandlingUtils';
 import {useDispatch} from 'react-redux';
-import {setUser} from 'store/user';
+import {Pressable} from 'react-native';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 export default React.memo((props: RootStackScreenProps<'Login'>) => {
   const {navigation} = props;
@@ -73,24 +75,55 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
   };
 
   const getHeaderTitle = () => (
-    <Text variant="headlineLarge" style={loginStyles.largeHeader}>
-      Login
-    </Text>
+    <View style={{marginHorizontal: s(16)}}>
+      <Image
+        source={require('../../assets/images/mtc_logo.jpg')}
+        style={{height: vs(80), width: s(80)}}
+        resizeMode="contain"
+      />
+      <Text variant="headlineSmall" style={{marginTop: vs(16)}}>
+        Sign In
+      </Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'flex-start',
+          alignItems: 'baseline',
+        }}>
+        <Text variant="bodyMedium" style={{fontWeight: '700'}}>
+          Don't Have Account?
+        </Text>
+        <Text
+          variant="bodyMedium"
+          style={{color: AppColors.PERCENT_CONTAINER, fontWeight: 'bold'}}>
+          Create account
+        </Text>
+      </View>
+    </View>
   );
   const getHeaderContent = () => (
-    <Text variant="bodyLarge" style={{fontWeight: '600', marginBottom: vs(32)}}>
-      please Sign In To Contiune
+    <Text
+      variant="bodyLarge"
+      style={{fontWeight: 'bold', marginBottom: vs(32), alignSelf: 'center'}}>
+      Sign In To your account
     </Text>
   );
 
   const getFooterContent = () => (
-    <TouchableOpacity
-      style={loginStyles.bottomContent}
-      onPress={() => navigation.navigate('Register')}>
-      <Text variant="bodyLarge" style={[{fontWeight: '600'}]}>
-        Don't Have Account Sign In
+    <Pressable onPress={() => navigation.navigate('DashBoard')}>
+      <Text
+        variant="bodyLarge"
+        style={[
+          {
+            fontWeight: 'bold',
+            color: AppColors.PERCENT_CONTAINER,
+            alignSelf: 'center',
+            marginTop: vs(16),
+          },
+        ]}>
+        Contiune as a visitor
       </Text>
-    </TouchableOpacity>
+    </Pressable>
   );
 
   const getEmailInput = () => (
@@ -109,16 +142,24 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
       }}
       render={({field: {onChange, onBlur, value}}) => (
         <TextInput
-          topLabelProps={topLabelProps('Email Address')}
           style={loginStyles.input}
-          placeholder="name@example.com"
+          placeholder="Email"
           keyboardType="email-address"
           errorProps={{errorMessage: formErrors.email?.message}}
           onBlur={onBlur}
           onChange={onChange}
           onChangeText={onChange}
           value={value}
-          returnKeyType={'done'}
+          activeUnderlineColor={AppColors.PERCENT_CONTAINER}
+
+          // left={
+          //   <PaperInput.Icon
+          //     icon="email-outline"
+          //     size={24}
+          //     color={AppColors.PRIMARY}
+          //     style={{alignSelf: 'center'}}
+          //   />
+          // }
         />
       )}
     />
@@ -140,29 +181,50 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
       }}
       render={({field: {onChange, onBlur, value}}) => (
         <TextInput
-          topLabelProps={topLabelProps('Password')}
           style={loginStyles.input}
-          placeholder="********"
+          placeholder="Password"
           keyboardType="numbers-and-punctuation"
           errorProps={{errorMessage: formErrors.password?.message}}
           onBlur={onBlur}
           onChange={onChange}
           onChangeText={onChange}
           value={value}
+          activeUnderlineColor={AppColors.PERCENT_CONTAINER}
+          // left={
+          //   <PaperInput.Icon
+          //     icon="lock-outline"
+          //     size={24}
+          //     color={AppColors.PRIMARY}
+          //     style={{alignSelf: 'center'}}
+          //   />
+          // }
           right={
-            <TouchableOpacity onPress={handleIcon}>
-              <Icon
-                name={showPassword ? 'eye' : 'eye-off'}
-                size={25}
-                color={AppColors.SHADOW}
-              />
-            </TouchableOpacity>
+            <PaperInput.Icon
+              icon={showPassword ? 'eye' : 'eye-off'}
+              size={25}
+              onPress={handleIcon}
+            />
           }
           secureTextEntry={!showPassword}
-          returnKeyType={'go'}
         />
       )}
     />
+  );
+
+  const forgetPassword = () => (
+    <Pressable
+      style={{
+        alignSelf: 'flex-start',
+        marginHorizontal: s(16),
+        marginTop: vs(16),
+      }}
+      onPress={() => navigation.navigate('Forget_Password')}>
+      <Text
+        variant="bodyLarge"
+        style={{color: AppColors.PERCENT_CONTAINER, fontWeight: 'bold'}}>
+        Forget Your Password?
+      </Text>
+    </Pressable>
   );
 
   const topLabelProps = (label: string) => ({
@@ -173,15 +235,66 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
     },
   });
 
+  const signInRow = () => (
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        height: vs(40),
+        marginTop: vs(30),
+      }}>
+      <Text variant="headlineLarge" style={{marginEnd: s(16)}}>
+        Sign In
+      </Text>
+
+      <Pressable onPress={handleSubmit(onSubmitPress)}>
+        <View
+          style={{
+            height: vs(40),
+            width: s(80),
+            backgroundColor: '#2f1396',
+            borderRadius: ms(4),
+            justifyContent: 'center',
+          }}>
+          <Icon
+            name="chevron-right"
+            size={40}
+            style={{alignSelf: 'center'}}
+            color={'white'}
+          />
+        </View>
+      </Pressable>
+    </View>
+  );
+
   const getForm = () => (
     <>
       {getInputs()}
-      <Button
-        text="Login"
-        style={loginStyles.button}
-        onPress={handleSubmit(onSubmitPress)}
-      />
+      {forgetPassword()}
+      <View style={loginStyles.button}>
+        <Text variant="bodyLarge" style={{color: 'white', fontWeight: '600'}}>
+          Sign In
+        </Text>
+      </View>
+      {getOrSpace()}
+      {getFooterContent()}
     </>
+  );
+
+  const getOrSpace = () => (
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        width: '100%',
+        alignItems: 'center',
+        marginTop: vs(16),
+      }}>
+      <View style={{height: vs(0.5), backgroundColor: 'black', width: '30%'}} />
+      <Text variant="bodyMedium">Or</Text>
+      <View style={{height: vs(0.5), backgroundColor: 'black', width: '30%'}} />
+    </View>
   );
 
   const getInputs = () => (
@@ -194,15 +307,18 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
   const getPageContent = () => (
     <View style={loginStyles.container}>
       {getHeaderTitle()}
-      {getHeaderContent()}
       {getForm()}
     </View>
   );
 
   return (
-    <View style={{flex: 1, alignItems: 'stretch', justifyContent: 'center'}}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: 'white',
+        justifyContent: 'flex-start',
+      }}>
       {getPageContent()}
-      {getFooterContent()}
     </View>
   );
 });

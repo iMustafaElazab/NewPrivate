@@ -8,6 +8,8 @@ type RootStackParamList = {
   Chat: undefined;
   Settings: undefined;
   Image: undefined;
+  Forget_Password: undefined;
+  DashBoard: undefined;
 };
 
 type RootStackScreenProps<T extends keyof RootStackParamList> =

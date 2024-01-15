@@ -77,6 +77,7 @@ export default React.memo(() => {
   const onSubmitPress = async (data: FormValues) => {
     console.info(getLogMessage('onSubmitPress'), data);
     Keyboard.dismiss();
+    dispatch(showLoadingDialog());
 
     // Check if Internet available before calling API.
     if (isInternetAvailable) {
