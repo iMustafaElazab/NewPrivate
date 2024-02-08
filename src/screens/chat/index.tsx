@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, ImageBackground, Keyboard, View} from 'react-native';
 import {
   IconButton,
+  ScrollView,
   Text,
   TextInput,
 } from 'roqay-react-native-common-components';
@@ -17,6 +18,7 @@ import {chatCompletionsApi} from '../../store/api/chatApi';
 import Voice from '@react-native-community/voice';
 import Tts from 'react-native-tts';
 import Share from 'react-native-share';
+import Screen from 'components/Screen';
 
 export default React.memo((props: RootStackScreenProps<'Chat'>) => {
   const getLogMessage = (message: string) => {
@@ -325,7 +327,11 @@ export default React.memo((props: RootStackScreenProps<'Chat'>) => {
     </ImageBackground>
   );
 
-  return <View style={{flex: 1}}>{getPageContent()}</View>;
+  return (
+    <Screen style={{flex: 1}}>
+      <View style={{flex: 1}}>{getPageContent()}</View>
+    </Screen>
+  );
 });
 
 const chatStyles = ScaledSheet.create({

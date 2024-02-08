@@ -856,7 +856,7 @@ SPEC CHECKSUMS:
   React-Core: aaacca67f9ca54f142827e67f44bfbd815875eb6
   React-CoreModules: 32fab1d62416849a3b6dac6feff9d54e5ddc2d1e
   React-cxxreact: 37765b4975541105b2a3322a4b473417c158c869
-  React-debug: 05bf5494d23724ea0aa2102e76116b5133f4b94e
+  React-debug: 7c2895ea7adf562247504b1d8e9b552e650f4c85
   React-hermes: 935ae71fb3d7654e947beba8498835cd5e479707
   React-jsi: ec628dc7a15ffea969f237b0ea6d2fde212b19dd
   React-jsiexecutor: 59d1eb03af7d30b7d66589c410f13151271e8006
@@ -869,7 +869,7 @@ SPEC CHECKSUMS:
   react-native-restart: 7595693413fe3ca15893702f2c8306c62a708162
   react-native-safe-area-context: 0ee144a6170530ccc37a0fd9388e28d06f516a89
   react-native-voice: eb6b7c7f752310f72a6f4d64c2fba6ee724d6604
-  React-NativeModulesApple: 3ecde6e1c5e77c17124c3c80b6cb270d0c7fecd6
+  React-NativeModulesApple: 32649ab3a0e97a03dda9e0ecd5845bcd6666dd4f
   React-perflogger: 6bd153e776e6beed54c56b0847e1220a3ff92ba5
   React-RCTActionSheet: c0b62af44e610e69d9a2049a682f5dba4e9dff17
   React-RCTAnimation: fe7005136b58f58871cab2f70732343b6e330d30
@@ -883,9 +883,9 @@ SPEC CHECKSUMS:
   React-RCTVibration: ea3a68a49873a54ced927c90923fc6932baf344a
   React-rncore: 9672a017af4a7da7495d911f0b690cbcae9dd18d
   React-runtimeexecutor: 369ae9bb3f83b65201c0c8f7d50b72280b5a1dbc
-  React-runtimescheduler: 956d1adda0836a35823ad10f9d56be7d91539d3b
-  React-utils: a6ffdd2ed0b933bb0d314e51d6da2572ffae546a
-  ReactCommon: 09e160ef8f704e1a9141f531d49eb5b81aeca0e2
+  React-runtimescheduler: 8e6fcd423a4ca0a64d9afd24c31187955e6b9561
+  React-utils: a1a058297b59d5004bdd2983d12da28e75aaf946
+  ReactCommon: e270cff57684bcfc57bbde21d12efd0f6a94fd86
   RNBootSplash: 85f6b879c080e958afdb4c62ee04497b05fd7552
   RNCMaskedView: 949696f25ec596bfc697fc88e6f95cf0c79669b6
   RNCPushNotificationIOS: 64218f3c776c03d7408284a819b2abfda1834bc8
@@ -908,4 +908,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 74f0e85f7bf144bc3723147109df7abdea12a3be
 
-COCOAPODS: 1.14.3
+COCOAPODS: 1.12.1

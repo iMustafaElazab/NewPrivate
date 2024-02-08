@@ -12,6 +12,7 @@ import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 import {name as appName} from './app.json';
 import {processNotification} from './src/utils';
+import {QueryClient, QueryClientProvider} from 'react-query';
 
 import App from './src/App';
 
@@ -50,7 +51,13 @@ function HeadlessCheck({isHeadless}) {
     return null;
   }
 
-  return <App />;
+  const queryClient = new QueryClient();
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <App />
+    </QueryClientProvider>
+  );
 }
 
 AppRegistry.registerComponent(appName, () => HeadlessCheck);

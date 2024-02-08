@@ -54,9 +54,7 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
   };
 
   const getHeaderTitle = () => (
-    <Text variant="headlineLarge" style={loginStyles.largeHeader}>
-      Login
-    </Text>
+    <Text style={loginStyles.largeHeader}>Login to your {'\n'}Account</Text>
   );
   const getHeaderContent = () => (
     <Text variant="bodyLarge" style={{fontWeight: '600', marginBottom: vs(32)}}>
