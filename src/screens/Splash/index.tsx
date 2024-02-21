@@ -1,8 +1,11 @@
-import React from 'react';
+import React, {useMemo, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import RNBootSplash from 'react-native-bootsplash';
 import {Animated, Dimensions, StyleSheet} from 'react-native';
-
+import firestore from '@react-native-firebase/firestore';
+import remoteConfig, {
+  FirebaseRemoteConfigTypes,
+} from '@react-native-firebase/remote-config';
 import styles from './styles';
 import {
   type RootState,
@@ -10,6 +13,8 @@ import {
   getUserApi,
   removeUser as removeStateUser,
   setApiKey,
+  setBaseUrl,
+  userApi,
 } from 'store';
 import {
   getLanguage,
@@ -25,6 +30,8 @@ import {isErrorWithStatus} from 'utils';
 
 import {Screen} from 'components';
 import LocalStorageKeys from 'core/LocalStorage/keys';
+import user from 'store/user';
+import {fetchConfig, getRemoteValue, refreshConfig} from 'core/firestore';
 
 export default React.memo((props: RootStackScreenProps<'Splash'>) => {
   // #region Logger
@@ -127,6 +134,41 @@ export default React.memo((props: RootStackScreenProps<'Splash'>) => {
     };
 
     /**
+     * geturls from firestore
+     */
+
+    const getBaseUrl = async (): Promise<
+      FirebaseFirestoreTypes.DocumentData | string
+    > => {
+      try {
+        const documentSnapshot = await firestore()
+          .collection('URLS')
+          .doc('BASEURL')
+          .get();
+        return documentSnapshot.data();
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        return 'hhhhh';
+      }
+    };
+
+    // Example of using the function and logging the result
+    const logBaseUrl = async (): Promise<void> => {
+      try {
+        const baseUrl = await getBaseUrl();
+        //  dispatch(setBaseUrl({base_url: baseUrl.baseUrl}));
+        console.info(getLogMessage('baseUrl'), JSON.stringify({baseUrl}));
+      } catch (error) {
+        console.error('Error logging base URL:', error);
+      }
+    };
+
+    // Invoke the function
+    logBaseUrl();
+
+    //  console.info(getLogMessage('remoteBaseUrl'), JSON.stringify({baseUrl}));
+
+    /**
      * getUpdatedUserData
      *
      * Call API to load updated user data then:
@@ -165,8 +207,14 @@ export default React.memo((props: RootStackScreenProps<'Splash'>) => {
       getSavedLanguage();
       getSavedUser();
       getSavedApiKey();
+      fetchConfig();
+      refreshConfig();
     }
   }, [bootSplashLogoIsLoaded, callGetUserApi, dispatch]);
+
+  const remoteConfigBaseUrl = getRemoteValue('baseUrl');
+  dispatch(setBaseUrl({base_url: remoteConfigBaseUrl}));
+  console.info(getLogMessage('remoteConfigBaseUrl'), remoteConfigBaseUrl);
 
   React.useEffect(() => {
     const hideSplash = async () => {
@@ -208,7 +256,7 @@ export default React.memo((props: RootStackScreenProps<'Splash'>) => {
 
     const openNextScreen = () => {
       console.info(getLogMessage('openNextScreen'));
-      navigation.replace('Sample');
+      navigation.replace('Login');
       //navigation.replace(stateUser ? 'Home' : 'Login');
     };
 

@@ -1,7 +1,7 @@
-interface ApiRequest {
+interface ApiRequest<T = any, R = any> {
   params?: Record<string, any>;
-  body?: any;
-  pathVar?: any;
+  body?: T;
+  pathVar?: R;
 }
 
 export default ApiRequest;

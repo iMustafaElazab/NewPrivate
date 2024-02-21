@@ -2,14 +2,19 @@ import AppColors from 'enums/AppColors';
 import React from 'react';
 import {ImageBackground, View} from 'react-native';
 import {ms, vs} from 'react-native-size-matters';
+import {useSelector} from 'react-redux';
 import {Button, IconButton} from 'roqay-react-native-common-components';
 import {RootStackScreenProps} from 'types/navigation';
+import {type RootState} from 'store';
+import {Text} from 'react-native-paper';
 
 export default React.memo((props: RootStackScreenProps<'Home'>) => {
   // #region Logger
   const getLogMessage = (message: string) => {
     return `## Home Screen: ${message}`;
   };
+
+  const state = useSelector((state: RootState) => state.user);
 
   const {navigation} = props;
 
@@ -33,6 +38,9 @@ export default React.memo((props: RootStackScreenProps<'Home'>) => {
           }}
           onPress={() => navigation.navigate('Chat')}
         />
+        <Text style={{fontSize: 20, color: 'white'}}>
+          {JSON.stringify(state.base_url)}
+        </Text>
         <Button
           text="Dall -E"
           style={{

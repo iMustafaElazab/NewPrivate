@@ -1955,10 +1955,20 @@
   dependencies:
     stacktrace-js "^2.0.2"
 
+"@react-native-firebase/firestore@^18.8.0":
+  version "18.8.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/firestore/-/firestore-18.8.0.tgz#77d54794b896ca792c2d97d01fd8e0c0d09bc322"
+  integrity sha512-tB8ZhIYuFoTO4kYXdh5Q+LSPIXxJ5WPrVxxIxdc+qeaF7SudIojO6w/g8tTxbFdPEos8+JWhBIFAb+o0L3RbBQ==
+
 "@react-native-firebase/messaging@^18.1.0":
   version "18.7.3"
   resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-18.7.3.tgz#ac24cd5a33a6910facd79f04e6d9125d2b4d8ce9"
   integrity sha512-K2l8k9wif5mni85WP940uJjW3agnBqhgSTqtg7y+39EOnYJZ3WhIDpArHttTSbtTVB5OyJ8qLiOQm3gpkaKqPg==
+
+"@react-native-firebase/remote-config@^18.8.0":
+  version "18.8.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/remote-config/-/remote-config-18.8.0.tgz#150bc8924498c40bc45c7d3a958616be0bc3d53b"
+  integrity sha512-U6OkVflyZ+T4SStYbo8bYl65oSuhxtaXKME7Da0WGtFObSmz2uvjpCb7QDiuM4KL1Tiy/JZ1FSWMxjHuF97LVw==
 
 "@react-native-masked-view/masked-view@^0.2.9":
   version "0.2.9"

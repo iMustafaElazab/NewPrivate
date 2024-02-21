@@ -8,12 +8,14 @@ interface UserState {
   user?: User;
   profile?: Profile;
   api_key?: string;
+  base_url?: string;
 }
 
 const initialState = {
   user: undefined,
   profile: undefined,
   api_key: undefined,
+  base_url: undefined,
 } as UserState;
 
 export const userSlice = createSlice({
@@ -32,9 +34,13 @@ export const userSlice = createSlice({
     setApiKey(state, action) {
       state.api_key = action.payload.api_key;
     },
+    setBaseUrl(state, action) {
+      state.base_url = action.payload.base_url;
+    },
   },
 });
 
-export const {setUser, removeUser, setProfile, setApiKey} = userSlice.actions;
+export const {setUser, removeUser, setProfile, setApiKey, setBaseUrl} =
+  userSlice.actions;
 
 export default userSlice.reducer;

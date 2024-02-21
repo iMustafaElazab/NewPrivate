@@ -19,6 +19,7 @@ import {vs} from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AppColors from 'enums/AppColors';
 import type {RootStackScreenProps} from 'types';
+import { useLoginMutation } from 'hooks/useAuthMutation';
 
 export default React.memo((props: RootStackScreenProps<'Login'>) => {
   const {navigation} = props;
@@ -27,7 +28,7 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
     return `## Login Screen: ${message}`;
   };
   const [showPassword, setShowPassword] = useState(false);
-
+  const {mutate, isLoading, error} = useLoginMutation();
   const handleIcon = () => {
     setShowPassword(!showPassword);
   };

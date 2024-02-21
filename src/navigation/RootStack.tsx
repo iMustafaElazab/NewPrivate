@@ -28,7 +28,7 @@ export default React.memo(() => {
       screenOptions={{headerShown: false}}>
       {/* Screens */}
       <Stack.Screen name="Splash" component={Splash} />
-      <Stack.Screen name="Home" component={home} /> 
+      <Stack.Screen name="Home" component={home} />
       <Stack.Screen name="Login" component={login} />
       <Stack.Screen name="Register" component={register} />
       <Stack.Screen name="Chat" component={chat} />
