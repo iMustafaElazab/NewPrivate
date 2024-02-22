@@ -12,6 +12,8 @@ const addHeaders = (config: InternalAxiosRequestConfig<any>) => {
   config.headers['Content-Type'] = 'application/json';
   //  config.headers['Accept-Language'] = getCurrentLocale();
   config.headers['cache-control'] = 'no-cache';
+  config.headers.Authorization =
+    'Bearer 745|nEtMycRuBJyka3iBcESPxmQoEm4WFV7sCYCqVCx389bf5de9';
   //   const token = store.getState().user?.user?.apiToken;
 
   //   if (token) {
@@ -121,7 +123,7 @@ const getErrorMessage = (error: AxiosError<ServerErrorResponse>) => {
 };
 
 const httpClient = axios.create({
-  baseURL: Config.API_URL,
+  baseURL: 'https://agrii.roqay.dev/api/v1',
   timeout: 60 * 1 * 1000,
   timeoutErrorMessage: 'network_error',
 });
@@ -138,7 +140,7 @@ httpClient.interceptors.response.use(
 
 export default httpClient;
 
-interface ServerError extends AxiosError<ServerErrorResponse> {
+export interface ServerError extends AxiosError<ServerErrorResponse> {
   date?: Date;
   status?: number;
   data?: ServerErrorResponse;

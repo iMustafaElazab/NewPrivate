@@ -1,8 +1,8 @@
+import {useQuery} from '@tanstack/react-query';
 import axios from 'axios';
-import {useQuery} from 'react-query';
 
 const useGetAllPosts = () => {
-  return useQuery('posts', fetchPosts);
+  //  return useQuery('posts', fetchPosts);
 };
 
 const fetchPosts = async () => {

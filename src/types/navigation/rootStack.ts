@@ -9,6 +9,8 @@ type RootStackParamList = {
   Settings: undefined;
   Image: undefined;
   Sample: undefined;
+  Profile: undefined;
+  Notification: undefined;
 };
 
 type RootStackScreenProps<T extends keyof RootStackParamList> =

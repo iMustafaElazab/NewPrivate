@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native';
 import {
+  AlertDialog,
   Button,
   ScrollView,
   Text,
@@ -19,7 +20,10 @@ import {vs} from 'react-native-size-matters';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AppColors from 'enums/AppColors';
 import type {RootStackScreenProps} from 'types';
-import { useLoginMutation } from 'hooks/useAuthMutation';
+import {useLoginMutation} from 'hooks/useAuthMutation';
+import queryAuth from 'core/api';
+import {Screen} from 'components/index';
+import {useMutation} from '@tanstack/react-query';
 
 export default React.memo((props: RootStackScreenProps<'Login'>) => {
   const {navigation} = props;
@@ -28,10 +32,36 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
     return `## Login Screen: ${message}`;
   };
   const [showPassword, setShowPassword] = useState(false);
-  const {mutate, isLoading, error} = useLoginMutation();
+  // const {mutate: callLoginApi, isLoading} = useMutation(queryAuth.login, {
+  //   onSuccess: async (data: string, context: string) => {
+  //     console.log(getLogMessage('onSuccess'), data);
+  //     navigation.navigate('Profile');
+  //   },
+  //   onError: async (data: any, context: string) => {
+  //     console.log(getLogMessage('onError'), data.data.message);
+  //   },
+  // });
+
+  const {
+    mutate: callLoginApi,
+    isPending,
+    isSuccess,
+    isError,
+    data,
+    error,
+  } = useLoginMutation();
   const handleIcon = () => {
     setShowPassword(!showPassword);
   };
+
+  if (isError) {
+    console.log(getLogMessage('onError'), error.response?.data.message);
+  }
+
+  if (isSuccess) {
+    navigation.navigate('Profile');
+    console.log(getLogMessage('onSuccess'), data);
+  }
 
   type FormValues = {
     email?: string;
@@ -51,6 +81,9 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
   });
 
   const onSubmitPress = async (data: FormValues) => {
+    callLoginApi({
+      body: {email: data.email, password: data.password},
+    });
     console.log(getLogMessage('data'), data);
   };
 
@@ -111,10 +144,6 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
         required: {
           value: true,
           message: 'Field is Invalid',
-        },
-        pattern: {
-          value: strictPasswordRegExp,
-          message: 'Invalid Field',
         },
       }}
       render={({field: {onChange, onBlur, value}}) => (
@@ -178,9 +207,11 @@ export default React.memo((props: RootStackScreenProps<'Login'>) => {
   );
 
   return (
-    <ScrollView contentContainerStyle={{flex: 1, flexGrow: 1}}>
-      {getPageContent()}
-      {getFooterContent()}
-    </ScrollView>
+    <Screen style={{flex: 1}}>
+      <ScrollView contentContainerStyle={{flex: 1, flexGrow: 1}}>
+        {getPageContent()}
+        {getFooterContent()}
+      </ScrollView>
+    </Screen>
   );
 });

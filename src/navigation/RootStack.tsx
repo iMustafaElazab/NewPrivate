@@ -12,6 +12,8 @@ import chat from 'screens/chat';
 import settings from 'screens/settings';
 import image from 'screens/image';
 import sample from 'screens/sample';
+import profile from 'screens/profile';
+import notification from 'screens/notification';
 
 // Navigators.
 // TODO: Add navigators imports here.
@@ -35,6 +37,8 @@ export default React.memo(() => {
       <Stack.Screen name="Settings" component={settings} />
       <Stack.Screen name="Image" component={image} />
       <Stack.Screen name="Sample" component={sample} />
+      <Stack.Screen name="Profile" component={profile} />
+      <Stack.Screen name="Notification" component={notification} />
 
       {/* Navigators */}
       {/* TODO: Add nested navigators here. */}

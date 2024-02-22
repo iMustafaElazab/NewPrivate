@@ -12,9 +12,9 @@ import PushNotificationIOS from '@react-native-community/push-notification-ios';
 
 import {name as appName} from './app.json';
 import {processNotification} from './src/utils';
-import {QueryClient, QueryClientProvider} from 'react-query';
 
 import App from './src/App';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 
 enableScreens();
 
@@ -51,7 +51,13 @@ function HeadlessCheck({isHeadless}) {
     return null;
   }
 
-  const queryClient = new QueryClient();
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        staleTime: Infinity,
+      },
+    },
+  });
 
   return (
     <QueryClientProvider client={queryClient}>

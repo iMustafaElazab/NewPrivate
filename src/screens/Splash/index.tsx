@@ -30,7 +30,6 @@ import {isErrorWithStatus} from 'utils';
 
 import {Screen} from 'components';
 import LocalStorageKeys from 'core/LocalStorage/keys';
-import user from 'store/user';
 import {fetchConfig, getRemoteValue, refreshConfig} from 'core/firestore';
 
 export default React.memo((props: RootStackScreenProps<'Splash'>) => {
@@ -256,6 +255,7 @@ export default React.memo((props: RootStackScreenProps<'Splash'>) => {
 
     const openNextScreen = () => {
       console.info(getLogMessage('openNextScreen'));
+      //  navigation.replace('Notification');
       navigation.replace('Login');
       //navigation.replace(stateUser ? 'Home' : 'Login');
     };
