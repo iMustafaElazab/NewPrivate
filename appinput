@@ -1,0 +1,370 @@
+/* eslint-disable react-native/no-inline-styles */
+/**
+ * @format
+ * @flow
+ */
+
+import React, {useLayoutEffect, useState} from 'react';
+import {View, Image, TextInput, TouchableOpacity} from 'react-native';
+import {ActivityIndicator, TouchableRipple} from 'react-native-paper';
+import {ScaledSheet, ms, s, vs} from 'react-native-size-matters';
+
+import type {Node} from 'react';
+
+import Text from './Text';
+
+import AppColors from '../enums/AppColors';
+import Colors from '../enums/AppColors';
+import AppImages from '../enums/AppImages';
+import AppInputTypes from '../enums/AppInputTypes';
+import Languages from '../enums/AppLanguages';
+
+import {getCurrentLocale} from '../i18n';
+
+const MIN_INPUT_HEIGHT = 44;
+
+// #region Styles
+const styles = ScaledSheet.create({
+  container: {
+    marginTop: '16@msr',
+    width: '100%',
+    alignSelf: 'center',
+    overflow: 'hidden',
+    borderRadius: '8@msr',
+    backgroundColor: Colors.surface,
+    borderColor: Colors.surface,
+    borderWidth: ms(1),
+  },
+  inputRow: {
+    backgroundColor: Colors.transparent,
+    // backgroundColor: 'yellow',
+    minHeight: MIN_INPUT_HEIGHT,
+    borderRadius: '8@msr',
+    flexDirection: 'row',
+    width: '100%',
+    paddingHorizontal: '16@msr',
+    paddingVertical: '8@msr',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  input: {
+    flex: 1,
+    backgroundColor: Colors.transparent,
+    color: Colors.text_on_background,
+    fontSize: '16@msr',
+    paddingEnd: '12@msr',
+    minHeight: MIN_INPUT_HEIGHT,
+    fontFamily: 'BahijTheSansArabicPlain',
+    textAlignVertical: 'center',
+  },
+  dropDownImage: {
+    marginStart: '16@msr',
+    width: '12@msr',
+    height: '12@msr',
+    resizeMode: 'contain',
+    tintColor: Colors.input_placeholder,
+  },
+  ripple: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    start: 0,
+  },
+  startImage: {
+    width: '20@msr',
+    height: '20@msr',
+    resizeMode: 'contain',
+    marginEnd: '12@msr',
+    tintColor: Colors.text_on_background,
+  },
+  divider: {
+    height: '22@msr',
+    width: '1@msr',
+    alignSelf: 'center',
+    backgroundColor: Colors.input_start_image,
+    marginEnd: '12@msr',
+  },
+  startLabel: {
+    color: Colors.input_start_label,
+    marginEnd: '12@msr',
+  },
+  secureImageContainer: {
+    width: ms(40),
+  },
+  secureImage: {
+    marginStart: '16@msr',
+    tintColor: Colors.input_placeholder,
+    width: '24@msr',
+    height: '24@msr',
+  },
+  dropdownText: {
+    paddingHorizontal: ms(1),
+    alignItems: 'flex-start',
+  },
+});
+// #endregion
+
+// #region Types
+type Props = {
+  type?: ?string,
+  keyboardType?: ?any,
+  numberOfLines?: ?number,
+  label?: ?string,
+  placeholder?: ?string,
+  value?: ?string,
+  secureTextEntry?: ?boolean,
+  editable?: ?boolean,
+  onChangeText?: ?Function,
+  onPress?: ?Function,
+  marginTop?: ?number,
+  labelColor?: ?string,
+  selectionImage?: ?number,
+  selectionImageStyle?: ?Object,
+  startImage?: ?number,
+  width?: ?number | ?string,
+  required?: ?boolean,
+  isLoading?: ?boolean,
+  maxLength?: ?number,
+  backgroundColor?: ?string,
+  fontSize?: ?number,
+  inputTextColor?: ?string,
+  key?: ?string,
+  extendTextValue?: ?boolean,
+  placeholderColor?: ?string,
+};
+// #endregion
+
+const getLogMessage: (message: string) => string = (message: string) => {
+  return `## AppInput: ${message}`;
+};
+
+const AppInput: (props: Props) => Node = ({
+  type = AppInputTypes.NORMAL.value,
+  keyboardType,
+  numberOfLines,
+  label,
+  placeholder,
+  value,
+  secureTextEntry,
+  editable,
+  onChangeText = onChangeTextDefault,
+  onPress = onPressDefault,
+  marginTop,
+  labelColor,
+  selectionImage,
+  selectionImageStyle,
+  width,
+  required,
+  isLoading = false,
+  maxLength,
+  backgroundColor,
+  fontSize,
+  startImage,
+  inputTextColor,
+  key,
+  extendTextValue,
+  placeholderColor,
+}) => {
+  const [showInputText, setShowInputText] = useState(true);
+
+  //#region  Hooks
+  useLayoutEffect(() => {
+    if (secureTextEntry) {
+      setShowInputText(false);
+    }
+  }, [secureTextEntry]);
+  //#endregion
+
+  //#region onPress Events
+  const toggleShowInputText: () => void = () => {
+    console.log(getLogMessage('toggleShowInputText'));
+    setShowInputText(pre => !pre);
+  };
+  //#endregion
+
+  //#region Styles logic
+  let inputStyle: Object = {
+    ...styles.input,
+    textAlign: getCurrentLocale() === Languages.ARABIC.iso ? 'right' : 'left',
+  };
+  let inputViewStyle: Object = {...styles.inputRow};
+  let containerStyle: Object = {...styles.container};
+
+  if (backgroundColor) {
+    containerStyle = {
+      ...containerStyle,
+      backgroundColor,
+      borderColor: backgroundColor,
+    };
+  }
+
+  if (marginTop || marginTop === 0) {
+    containerStyle = {
+      ...containerStyle,
+      marginTop: ms(marginTop),
+    };
+  }
+
+  if (width) {
+    containerStyle = {...containerStyle, width};
+  }
+
+  if (numberOfLines && numberOfLines > 1) {
+    inputStyle = {
+      ...inputStyle,
+      textAlignVertical: 'top',
+      minHeight: ms(numberOfLines * 28),
+    };
+  } else if (
+    type === AppInputTypes.DIALOG.value ||
+    type === AppInputTypes.DROPDOWN.value
+  ) {
+    inputViewStyle = {
+      ...inputViewStyle,
+      minHeight: ms(MIN_INPUT_HEIGHT),
+    };
+  } else {
+    inputStyle = {
+      ...inputStyle,
+      paddingVertical: ms(2),
+    };
+    inputViewStyle = {
+      ...inputViewStyle,
+      height: ms(MIN_INPUT_HEIGHT),
+    };
+  }
+
+  if (inputTextColor) {
+    inputStyle = {
+      ...inputStyle,
+      color: inputTextColor,
+    };
+  }
+  //#endregion
+
+  return (
+    <View style={containerStyle}>
+      <View style={inputViewStyle}>
+        {Boolean(startImage) && (
+          <>
+            <Image
+              source={startImage}
+              style={styles.startImage}
+              resizeMode="contain"
+            />
+            <View style={styles.divider} />
+          </>
+        )}
+
+        {Boolean(label) && (
+          <>
+            <Text style={styles.startLabel} textSize={14}>
+              {label}:
+            </Text>
+          </>
+        )}
+
+        {type === AppInputTypes.NORMAL.value && (
+          <TextInput
+            key={key || label || ''}
+            autoCorrect={false}
+            editable={editable && type === AppInputTypes.NORMAL.value}
+            placeholder={placeholder !== null ? placeholder : label}
+            placeholderTextColor={placeholderColor || Colors.input_placeholder}
+            multiline={secureTextEntry || numberOfLines === 1 ? false : true}
+            numberOfLines={numberOfLines}
+            value={value}
+            // $FlowIgnore
+            onChangeText={text => onChangeText(text)}
+            keyboardType={keyboardType}
+            secureTextEntry={secureTextEntry ? !showInputText : false}
+            selectionColor={Colors.primary}
+            autoCapitalize="none"
+            style={[inputStyle]}
+            maxLength={maxLength}
+          />
+        )}
+
+        {(type === AppInputTypes.DIALOG.value ||
+          type === AppInputTypes.DROPDOWN.value) && (
+          <>
+            <View style={[styles.dropdownText, extendTextValue && {flex: 1}]}>
+              <Text
+                style={{
+                  color: value
+                    ? inputTextColor || AppColors.text_on_background
+                    : placeholderColor || AppColors.input_placeholder,
+                }}
+                textSize={15}>
+                {value || placeholder}
+              </Text>
+            </View>
+            <Image
+              source={selectionImage || AppImages.closedArrowDown}
+              style={[
+                styles.dropDownImage,
+                selectionImageStyle && {...selectionImageStyle},
+              ]}
+            />
+            {isLoading && (
+              <ActivityIndicator
+                animating={true}
+                color={AppColors.primary}
+                style={{width: ms(16), height: ms(16), marginStart: ms(16)}}
+              />
+            )}
+          </>
+        )}
+
+        {type === AppInputTypes.NORMAL.value && secureTextEntry === true && (
+          <>
+            <TouchableOpacity
+              style={styles.secureImageContainer}
+              onPress={toggleShowInputText}
+              disabled={!editable}>
+              <Image
+                source={AppImages.secureEye}
+                resizeMode="contain"
+                style={[styles.secureImage]}
+              />
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
+      {(type === AppInputTypes.DIALOG.value ||
+        type === AppInputTypes.DROPDOWN.value) && (
+        <>
+          <TouchableRipple
+            style={styles.ripple}
+            onPress={onPress}
+            disabled={!editable}>
+            <View />
+          </TouchableRipple>
+        </>
+      )}
+    </View>
+  );
+};
+
+const onChangeTextDefault: (text: string) => void = text => {
+  console.info(getLogMessage('onChangeTextDefault:: '), text);
+};
+const onPressDefault: () => void = () => {
+  console.info(getLogMessage('onPressDefault'));
+};
+
+// $FlowIgnore
+AppInput.defaultProps = {
+  type: AppInputTypes.NORMAL.value,
+  keyboardType: 'default',
+  numberOfLines: 1,
+  placeholder: null,
+  secureTextEntry: false,
+  editable: true,
+  onChangeText: onChangeTextDefault,
+  onPress: onPressDefault,
+  maxLength: null,
+};
+
+export default AppInput;
